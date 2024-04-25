@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- Project from https://start.vaadin.com/project/a9b105f0-2bf7-4c46-902d-99e1210fe98d -->
-    <groupId>com.progettosweng.application</groupId>
-    <artifactId>progettosweng</artifactId>
-    <name>progettosweng</name>
+    <!-- Project from https://start.vaadin.com/project/6080685c-dcde-4a39-bc3f-256cd529dcf7 -->
+    <groupId>com.prova.application</groupId>
+    <artifactId>prova</artifactId>
+    <name>prova</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -87,6 +87,16 @@
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-testbench-junit5</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.32</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
         </dependency>
     </dependencies>
 
