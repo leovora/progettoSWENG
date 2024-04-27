@@ -28,7 +28,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         // Aggiungi il pulsante "Register" che reindirizza alla pagina di registrazione
         Button registerButton = new Button("Register", e -> {
-            getUI().ifPresent(ui -> ui.navigate("RegisterView"));
+            getUI().ifPresent(ui -> ui.navigate("register"));
         });
 
         // Aggiungi gli elementi al layout, in ordine desiderato
