@@ -29,5 +29,10 @@ public class User{
 
     @Column(name = "COGNOME")
     private String cognome;
-
+    public String getEmail() {
+        return email;
+    }
+    public void setUsername(String username) {
+        this.email = email;
+    }
 }
