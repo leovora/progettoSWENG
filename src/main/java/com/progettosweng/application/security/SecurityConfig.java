@@ -36,13 +36,13 @@ public class SecurityConfig extends VaadinWebSecurity {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return email -> {
-            User user = userService.getUser(email);
+        return username -> {
+            User user = userService.getUser(username);
             if (user == null) {
-                throw new UsernameNotFoundException("Utente non trovato: " + email);
+                throw new UsernameNotFoundException("Utente non trovato: " + username);
             }
             return org.springframework.security.core.userdetails.User
-                    .withUsername(user.getEmail())
+                    .withUsername(user.getUsername())
                     .password(user.getPassword())
                     .roles("USER")
                     .build();

@@ -73,9 +73,9 @@ public class RegisterView extends Composite<Div> {
         return container;
     }
 
-    private void register(String email, String nome, String cognome, String password1, String password2) {
+    private void register(String username, String nome, String cognome, String password1, String password2) {
         // Implementazione della logica di registrazione
-        if (email.trim().isEmpty()) {
+        if (username.trim().isEmpty()) {
             Notification.show("Il campo username è vuoto", 3000, Position.TOP_CENTER);
         } else if (nome.isEmpty()) {
             Notification.show("Il campo nome è vuoto", 3000, Position.TOP_CENTER);
