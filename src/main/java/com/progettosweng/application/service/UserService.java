@@ -15,7 +15,7 @@ public class UserService {
         return repository.save(user);
     }
 
-    public User getUser(String email){
-        return repository.findById(email).orElse(null);
+    public User getUser(String username){
+        return repository.findById(username).orElse(null);
     }
 }
