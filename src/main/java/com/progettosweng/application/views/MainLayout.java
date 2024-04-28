@@ -6,6 +6,7 @@ import com.progettosweng.application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -48,12 +49,14 @@ public class MainLayout extends AppLayout {
         //Controllo se l'utente è anonimo oppure registrato, e determino se inserire pulsante di login o logout
         if(isUserLoggedIn()){
             Button logout = new Button("Logout", e -> securityService.logout());
+            logout.addThemeVariants(ButtonVariant.LUMO_ERROR);
             header.add(logout);
         }
         else{
             Button login = new Button("Login", e -> {
                 getUI().ifPresent(ui -> ui.navigate("login"));
             });
+            login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             header.add(login);
         }
 
