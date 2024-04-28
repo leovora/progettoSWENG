@@ -12,34 +12,33 @@ import com.vaadin.flow.router.Route;
 
 @Route("login")
 @PageTitle("Login | SWENG")
-public class LoginView extends VerticalLayout implements BeforeEnterObserver{
+public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm login = new LoginForm();
 
-    public LoginView() {
+    public LoginView(){
         addClassName("login-view");
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
 
         login.setAction("login");
-        login.setForgotPasswordButtonVisible(false);
 
         H2 subtitle = new H2("Non sei registrato?");
 
         // Aggiungi il pulsante "Register" che reindirizza alla pagina di registrazione
-        Button registerButton = new Button("Registrati", e -> {
-            getUI().ifPresent(ui -> ui.navigate("hello"));
+        Button registerButton = new Button("Register", e -> {
+            getUI().ifPresent(ui -> ui.navigate("register"));
         });
 
-        add(new H1("SWENG"), login, subtitle,registerButton );
+        // Aggiungi gli elementi al layout, in ordine desiderato
+        add(new H1("Pagina di log-in"),login,  subtitle,registerButton );
     }
 
     @Override
-    // This interface allows the class to observe events before entering the view
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        // Inform the user in case of authentication error
-        if (beforeEnterEvent.getLocation()
+        // Informa l'utente di un errore di autenticazione
+        if(beforeEnterEvent.getLocation()
                 .getQueryParameters()
                 .getParameters()
                 .containsKey("error")) {
