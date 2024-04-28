@@ -1,7 +1,7 @@
 package com.progettosweng.application.security;
 
-import com.progettosweng.application.entity.User;
 import com.progettosweng.application.service.UserService;
+import com.progettosweng.application.entity.User;
 import com.progettosweng.application.views.LoginView;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
