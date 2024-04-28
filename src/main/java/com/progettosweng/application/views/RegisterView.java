@@ -16,7 +16,7 @@ public class RegisterView extends Composite<VerticalLayout> {
 
     @Override
     protected VerticalLayout initContent() {
-        // Implementazione del contenuto della vista
+        //Implementazione del contenuto della vista
         TextField email = new TextField("Email");
         TextField nome = new TextField("Nome");
         TextField cognome = new TextField("Cognome");
