@@ -12,8 +12,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.router.Router;
+import com.vaadin.flow.router.RouterLink;
 
 @Route("register")
+@AnonymousAllowed
 
 public class RegisterView extends Composite<Div> {
 
@@ -82,7 +86,9 @@ public class RegisterView extends Composite<Div> {
         } else if (!password1.equals(password2)) {
             Notification.show("Le password non coincidono", 3000, Position.TOP_CENTER);
         } else {
-            Notification.show("Benvenuto", 3000, Position.TOP_CENTER);
+            Notification.show("Benvenuto "+ nome, 3000, Position.TOP_CENTER);
+            // Naviga alla pagina "hello.java"
+            getUI().ifPresent(ui -> ui.navigate("hello"));
         }
     }
 }
