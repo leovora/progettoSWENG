@@ -1,11 +1,14 @@
 package com.progettosweng.application.views;
 
-import com.vaadin.flow.component.Composite;
+import com.progettosweng.application.entity.User;
+import com.progettosweng.application.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,6 +16,16 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Route("register")
+@AnonymousAllowed
+public class RegisterView extends VerticalLayout {
+
+    @Autowired
+    private UserService userService;
+
+    public RegisterView() {
 import com.vaadin.flow.router.Router;
 import com.vaadin.flow.router.RouterLink;
 
@@ -56,13 +69,42 @@ public class RegisterView extends Composite<Div> {
         password2.getStyle().set("color", "black");
 
 
-        VerticalLayout layout = new VerticalLayout(
+
+
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnOutsideClick(false);
+
+        HorizontalLayout horizontalLayout = new HorizontalLayout();
+        Button conferma = new Button("Conferma", confirmEvent -> {
+            if(register(username.getValue(), nome.getValue(), cognome.getValue(), password1.getValue(), password2.getValue())){
+                dialog.close();
+            };
+        });
+        conferma.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        Button indietro = new Button("Chiudi", cancelEvent -> {
+            getUI().ifPresent(ui -> ui.navigate("login"));
+            dialog.close();
+        });
+
+        horizontalLayout.add(conferma, indietro);
+
+        dialog.add(new VerticalLayout(
                 new H2("Registrazione"),
                 username,
                 nome,
                 cognome,
                 password1,
                 password2,
+                horizontalLayout
+        ));
+        dialog.open();
+
+        setAlignItems(FlexComponent.Alignment.CENTER);
+        setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+    }
+
+    private boolean register(String username, String nome, String cognome, String password1, String password2) {
                 registerButton
         );
 
@@ -85,10 +127,19 @@ public class RegisterView extends Composite<Div> {
             Notification.show("Il campo password è vuoto", 3000, Position.TOP_CENTER);
         } else if (!password1.equals(password2)) {
             Notification.show("Le password non coincidono", 3000, Position.TOP_CENTER);
+        } else if (userService.existsUserByUsername(username)){
+            Notification.show("Nome utente già utilizzato", 3000, Position.TOP_CENTER);
         } else {
+            userService.saveUser(new User(username, password1, nome, cognome));
+            getUI().ifPresent(ui -> ui.navigate("login"));
+            Notification.show("Benvenuto " + nome + "! Fai il login", 3000, Position.TOP_CENTER);
+            return true;
+
             Notification.show("Benvenuto "+ nome, 3000, Position.TOP_CENTER);
             // Naviga alla pagina "hello.java"
             getUI().ifPresent(ui -> ui.navigate("hello"));
+
         }
+        return false;
     }
 }

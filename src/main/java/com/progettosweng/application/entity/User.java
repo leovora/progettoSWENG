@@ -31,7 +31,9 @@ public class User{
 
     @Column(name = "COGNOME")
     private String cognome;
+
     public String getUsername() {
         return username;
     }
+
 }

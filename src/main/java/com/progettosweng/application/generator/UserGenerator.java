@@ -19,8 +19,10 @@ public class UserGenerator implements CommandLineRunner {
 
     private void generateUsers() {
         // Genera e salva gli utenti nel database
-        User user1 = new User("admin1", "123", "Admin", "Admin");
-        User user2 = new User("user1", "123", "User", "User");
+        User user1 = new User("admin", "123", "Admin", "Admin");
+        User user2 = new User("user", "123", "User", "User");
+        
+
 
         userService.saveUser(user1);
         userService.saveUser(user2);
