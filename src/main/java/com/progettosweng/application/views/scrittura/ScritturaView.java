@@ -1,4 +1,4 @@
-package com.progettosweng.application.views.about;
+package com.progettosweng.application.views.scrittura;
 
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.html.H2;
@@ -7,25 +7,22 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import jakarta.annotation.security.PermitAll;
 
-@PageTitle("About")
-@Route(value = "about", layout = MainLayout.class)
+@PageTitle("Storia | Scrittura")
+@Route(value = "scrittura", layout = MainLayout.class)
 @PermitAll
-public class AboutView extends VerticalLayout {
+public class ScritturaView extends VerticalLayout {
 
-    public AboutView() {
+    public ScritturaView() {
         setSpacing(false);
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
-        add(img);
-
-        H2 header = new H2("This place intentionally left empty");
+        H2 header = new H2("Da implementare");
         header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
         add(header);
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        add(new Paragraph("In questa pagina un utente registrato può scrivere una storia"));
 
         setSizeFull();
         setJustifyContentMode(JustifyContentMode.CENTER);

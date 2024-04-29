@@ -1,8 +1,11 @@
 package com.progettosweng.application.views;
 
-import com.progettosweng.application.views.about.AboutView;
+import com.progettosweng.application.views.catalogo.CatalogoView;
 import com.progettosweng.application.security.SecurityService;
-import com.progettosweng.application.views.helloworld.HelloWorldView;
+import com.progettosweng.application.views.gestioneGiocate.GestioneGiocateView;
+import com.progettosweng.application.views.gestioneScritte.GestioneScritteView;
+import com.progettosweng.application.views.home.HomeView;
+import com.progettosweng.application.views.scrittura.ScritturaView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -60,9 +63,6 @@ public class MainLayout extends AppLayout {
             header.add(login);
         }
 
-
-
-
     }
 
     private void addDrawerContent() {
@@ -78,8 +78,11 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        nav.addItem(new SideNavItem("Hello World", HelloWorldView.class));
-        nav.addItem(new SideNavItem("About", AboutView.class));
+        nav.addItem(new SideNavItem("Home", HomeView.class));
+        nav.addItem(new SideNavItem("Catalogo", CatalogoView.class));
+        nav.addItem(new SideNavItem("Scrittura storia", ScritturaView.class));
+        nav.addItem(new SideNavItem("Gestione storie scritte", GestioneScritteView.class));
+        nav.addItem(new SideNavItem("Gestione storie giocate", GestioneGiocateView.class));
 
         return nav;
     }

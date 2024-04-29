@@ -1,6 +1,7 @@
 package com.progettosweng.application;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 import com.progettosweng.application.service.UserService;
@@ -37,8 +38,15 @@ public class UserTest{
     //Test che verifica che il metodo getUser faccia uso corretto di UserRepository restituendo l'utente corrispondente
     @Test
     public void getUserTest() {
-        when(userRepository.findById(user.getEmail())).thenReturn(Optional.ofNullable(user));
-        assertEquals(user, userService.getUser(user.getEmail()));
+        when(userRepository.findById(user.getUsername())).thenReturn(Optional.ofNullable(user));
+        assertEquals(user, userService.getUser(user.getUsername()));
+    }
+
+    //Test che verifica che il metodo existsUserByUsername faccia uso corretto di UserRepository restituendo true
+    @Test
+    public void checkExistingUser() {
+        when(userRepository.existsByUsername(user.getUsername())).thenReturn(true);
+        assertTrue(userService.existsUserByUsername(user.getUsername()));
     }
 
 
