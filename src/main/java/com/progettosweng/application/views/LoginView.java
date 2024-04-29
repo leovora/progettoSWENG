@@ -42,7 +42,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button cancel = new Button("Indietro", e -> {
-            getUI().ifPresent(ui -> ui.navigate("hello"));
+            getUI().ifPresent(ui -> ui.navigate("HomeView"));
         });
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
