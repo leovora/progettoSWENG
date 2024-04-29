@@ -1,7 +1,7 @@
 package com.progettosweng.application.views.helloworld;
 
-import com.progettosweng.application.entity.User;
 import com.progettosweng.application.service.UserService;
+import com.progettosweng.application.entity.User;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
@@ -12,7 +12,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
-import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static java.util.Objects.isNull;
@@ -23,18 +22,18 @@ import static java.util.Objects.isNull;
 @AnonymousAllowed
 public class HelloWorldView extends HorizontalLayout {
 
-    private TextField email;
+    private TextField username;
     private Button sayHello;
 
     @Autowired
     private UserService userService;
 
     public HelloWorldView() {
-        email = new TextField("Your email");
+        username = new TextField("Your email");
         sayHello = new Button("Insert email");
         sayHello.addClickListener(e -> {
 
-            User user = userService.getUser(email.getValue());
+            User user = userService.getUser(username.getValue());
             if(isNull(user)){
                 Notification.show("User not found");
             }else{
@@ -45,9 +44,9 @@ public class HelloWorldView extends HorizontalLayout {
         sayHello.addClickShortcut(Key.ENTER);
 
         setMargin(true);
-        setVerticalComponentAlignment(Alignment.END, email, sayHello);
+        setVerticalComponentAlignment(Alignment.END, username, sayHello);
 
-        add(email, sayHello);
+        add(username, sayHello);
     }
 
 }

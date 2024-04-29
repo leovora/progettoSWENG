@@ -1,7 +1,7 @@
 package com.progettosweng.application.views;
 
-import com.progettosweng.application.security.SecurityService;
 import com.progettosweng.application.views.about.AboutView;
+import com.progettosweng.application.security.SecurityService;
 import com.progettosweng.application.views.helloworld.HelloWorldView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;

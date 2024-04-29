@@ -25,5 +25,6 @@ public class UserService {
 
     public boolean existsUserByUsername(String username) {
         return repository.existsByUsername(username);
+
     }
 }

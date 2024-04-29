@@ -5,6 +5,7 @@ import com.progettosweng.application.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,12 +26,47 @@ public class RegisterView extends VerticalLayout {
     private UserService userService;
 
     public RegisterView() {
+import com.vaadin.flow.router.Router;
+import com.vaadin.flow.router.RouterLink;
+
+@Route("register")
+@AnonymousAllowed
+
+public class RegisterView extends Composite<Div> {
+
+    @Override
+    protected Div initContent() {
+        Div container = new Div();
+        container.getStyle().set("background-color", "var(--lumo-tint-10pct)");
+        container.getStyle().set("padding", "20px"); // Aggiunge spazio intorno al contenitore
+        container.getStyle().set("max-width", "400px"); // Imposta la larghezza massima
+        container.getStyle().set("min-width", "300px"); // Imposta la larghezza minima
+        container.getStyle().set("margin", "0 auto"); // Centra il container orizzontalmente
+        container.getStyle().set("margin-top", "100px");
+
+
+
         //Implementazione del contenuto della vista
         TextField username = new TextField("Username");
         TextField nome = new TextField("Nome");
         TextField cognome = new TextField("Cognome");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Conferma Password");
+
+
+        Button registerButton = new Button("Registrati", event -> register(
+                username.getValue(),
+                nome.getValue(),
+                cognome.getValue(),
+                password1.getValue(),
+                password2.getValue()
+        ));
+        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        username.getStyle().set("color", "black");
+        nome.getStyle().set("color", "black");
+        cognome.getStyle().set("color", "black");
+        password1.getStyle().set("color", "black");
+        password2.getStyle().set("color", "black");
 
 
 
@@ -69,6 +105,17 @@ public class RegisterView extends VerticalLayout {
     }
 
     private boolean register(String username, String nome, String cognome, String password1, String password2) {
+                registerButton
+        );
+
+        layout.setAlignItems(FlexComponent.Alignment.CENTER);
+        layout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        container.add(layout);
+
+        return container;
+    }
+
+    private void register(String username, String nome, String cognome, String password1, String password2) {
         // Implementazione della logica di registrazione
         if (username.trim().isEmpty()) {
             Notification.show("Il campo username è vuoto", 3000, Position.TOP_CENTER);
@@ -87,6 +134,11 @@ public class RegisterView extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate("login"));
             Notification.show("Benvenuto " + nome + "! Fai il login", 3000, Position.TOP_CENTER);
             return true;
+
+            Notification.show("Benvenuto "+ nome, 3000, Position.TOP_CENTER);
+            // Naviga alla pagina "hello.java"
+            getUI().ifPresent(ui -> ui.navigate("hello"));
+
         }
         return false;
     }
