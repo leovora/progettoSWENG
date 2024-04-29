@@ -19,8 +19,8 @@ import lombok.ToString;
 public class User{
 
     @Id
-    @Column(name = "EMAIL")
-    private String email;
+    @Column(name = "USERNAME")
+    private String username;
 
     @NotBlank
     @Column(name = "PASSWORD")
@@ -31,5 +31,9 @@ public class User{
 
     @Column(name = "COGNOME")
     private String cognome;
+
+    public String getUsername() {
+        return username;
+    }
 
 }
