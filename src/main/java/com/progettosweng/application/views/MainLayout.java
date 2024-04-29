@@ -4,7 +4,7 @@ import com.progettosweng.application.views.catalogo.CatalogoView;
 import com.progettosweng.application.security.SecurityService;
 import com.progettosweng.application.views.gestioneGiocate.GestioneGiocateView;
 import com.progettosweng.application.views.gestioneScritte.GestioneScritteView;
-import com.progettosweng.application.views.helloworld.HelloWorldView;
+import com.progettosweng.application.views.home.HomeView;
 import com.progettosweng.application.views.scrittura.ScritturaView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -78,7 +78,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        nav.addItem(new SideNavItem("Home", HelloWorldView.class));
+        nav.addItem(new SideNavItem("Home", HomeView.class));
         nav.addItem(new SideNavItem("Catalogo", CatalogoView.class));
         nav.addItem(new SideNavItem("Scrittura storia", ScritturaView.class));
         nav.addItem(new SideNavItem("Gestione storie scritte", GestioneScritteView.class));

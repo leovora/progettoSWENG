@@ -1,4 +1,4 @@
-package com.progettosweng.application.views.HomeView;
+package com.progettosweng.application.views.home;
 
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.html.H1;
