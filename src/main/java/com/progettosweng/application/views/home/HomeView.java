@@ -6,8 +6,8 @@ import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
@@ -18,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Objects;
 
-@PageTitle("Home")
+@PageTitle("Home | PathFinder")
 @Route(value = "home", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
 @AnonymousAllowed
@@ -40,15 +40,17 @@ public class HomeView extends VerticalLayout {
       
         Div tab = new Div();
         tab.getStyle().set("border-radius", "10px");
-        tab.getStyle().set("border", "1px solid #ccc");
-        tab.setWidthFull();
-        tab.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed magna turpis, vehicula ac nulla nec, posuere rutrum odio. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris nec egestas lorem. Sed tincidunt tempus massa. In eu ligula lorem. Sed nec leo nunc. Cras ex diam, mollis eget urna et, egestas tincidunt eros.\n" +
-                "\n" +
-                "Nullam a varius turpis. Donec sit amet scelerisque mauris. Nam eu posuere purus. Vestibulum sit amet elit odio. Nullam pretium, nunc at imperdiet iaculis, leo arcu efficitur felis, id lacinia purus eros in risus. Praesent dictum ut tortor a cursus. Duis vel erat ante. Cras semper, mauris nec posuere vestibulum, nunc orci consectetur nunc, fringilla eleifend neque nisl tincidunt nisi. Nulla quis rhoncus ex, a venenatis mi.");
-        tab.setHeight("200px");
+        tab.getStyle().setBackground("#154c79");
+        tab.getStyle().set("padding", "20px");
+        tab.getStyle().setBoxSizing(Style.BoxSizing.BORDER_BOX);
+        tab.setText("Benvenuto in PathFinder, in questa applicazione potrai scrivere e giocare a storie interattive. " +
+                    "Non è necessario effettuare il login per sfogliare e giocare alle storie, ma nota che non potrai salvare il " +
+                    "progresso di esse e non potrai scrivere le tue storie. Per un maggior approfondimento sulle funzionalità dell'applicazione, visita i seguenti link.");
         add(tab);
 
-        add(new H2("Le tue Storie: "));
+        Image logo = new Image("icons/icon.png", "placeholder PathFinder");
+        logo.setWidth("400px");
+        add(logo);
 
         HorizontalLayout horizontalLayout = new HorizontalLayout();
 
@@ -74,6 +76,8 @@ public class HomeView extends VerticalLayout {
         container1.getStyle().setBackground("#154c79");
         container1.getStyle().set("padding", "20px");
         container1.getStyle().set("border-radius", "10px");
+        container1.getStyle().setPaddingLeft("47px");
+        container1.getStyle().setPaddingRight("47px");
         container1.add(layoutDiv1);
 
 
