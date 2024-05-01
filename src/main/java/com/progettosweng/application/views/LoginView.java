@@ -15,7 +15,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.dialog.Dialog;
 
 @Route("login")
-@PageTitle("Login | SWENG")
+@PageTitle("Login | PathFinder")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
     private final LoginForm login = new LoginForm();
@@ -49,7 +49,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         horizontalLayout.add(registerButton, cancel);
 
         // Aggiungi gli elementi al layout, in ordine desiderato
-        add(new H1("SWENG"),login,  subtitle, horizontalLayout);
+        add(new H1("PathFinder"),login,  subtitle, horizontalLayout);
     }
 
     @Override

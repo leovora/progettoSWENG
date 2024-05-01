@@ -26,7 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @AnonymousAllowed
 public class MainLayout extends AppLayout {
 
-    private H2 viewTitle;
     private final SecurityService securityService;
 
     public MainLayout(SecurityService securityService) {
@@ -37,7 +36,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("SWENG");
+        H1 logo = new H1("PathFinder");
         logo.addClassNames("text-l", "m-m");
 
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
@@ -91,17 +90,6 @@ public class MainLayout extends AppLayout {
         Footer layout = new Footer();
 
         return layout;
-    }
-
-    @Override
-    protected void afterNavigation() {
-        super.afterNavigation();
-        //viewTitle.setText(getCurrentPageTitle());
-    }
-
-    private String getCurrentPageTitle() {
-        PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
-        return title == null ? "" : title.value();
     }
 
     public boolean isUserLoggedIn() {
