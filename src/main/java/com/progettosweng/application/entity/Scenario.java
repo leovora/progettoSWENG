@@ -27,10 +27,15 @@ public class Scenario {
     @Column(name = "Descrizione", length = 500)
     private String descrizione;
 
+    @ManyToOne
+    @JoinColumn(name = "storia_id")
+    private Storia storia;
+
     //TODO: SCELTA
 
-    public Scenario(String titolo, String descrizione, int numeroStato){
+    public Scenario(String titolo, String descrizione, Storia storia){
         this.titolo = titolo;
         this.descrizione = descrizione;
+        this.storia = storia;
     }
 }
