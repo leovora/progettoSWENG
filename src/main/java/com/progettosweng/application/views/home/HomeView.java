@@ -89,8 +89,7 @@ public class HomeView extends VerticalLayout {
 
         horizontalLayout.add(container1, container2);
 
-        add(horizontalLayout);  
-
+        add(horizontalLayout);
     }
 
 }

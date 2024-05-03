@@ -18,18 +18,22 @@ public class Storia{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdStoria")
-    private int IdStoria;
+    private int idStoria;
 
     @NotBlank
     @Column(name = "Titolo")
-    private String Titolo;
+    private String titolo;
 
     @Column(name = "Descrizione", length = 500)
-    private String Descrizione;
+    private String descrizione;
 
     @Column(name = "NumeroStato")
-    private int NumeroStato;
+    private int numeroStato;
 
-
+    public Storia(String titolo, String descrizione, int numeroStato){
+        this.titolo = titolo;
+        this.descrizione = descrizione;
+        this.numeroStato = numeroStato;
+    }
 
 }
