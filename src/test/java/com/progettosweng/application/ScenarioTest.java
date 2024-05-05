@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.entity.User;
 import com.progettosweng.application.service.ScenarioService;
 import com.progettosweng.application.repository.ScenarioRepository;
 import com.progettosweng.application.entity.Scenario;
@@ -28,11 +29,20 @@ public class ScenarioTest{
     @MockBean
     private ScenarioRepository scenarioRepository;
 
+    private User user = new User(
+            "user",
+            "123",
+            "nome",
+            "cognome"
+    );
+
     private Storia storia = new Storia(
             1,
             "Titolo storia",
             "Descrizione",
-            10
+            10,
+            user
+
     );
     private Scenario scenario1 = new Scenario(
             1,

@@ -30,6 +30,10 @@ public class Storia{
     @Column(name = "NumeroStato")
     private int numeroStato;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User creatore;
+
     public Storia(String titolo, String descrizione, int numeroStato){
         this.titolo = titolo;
         this.descrizione = descrizione;
