@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import com.progettosweng.application.entity.User;
 import com.progettosweng.application.repository.StoriaRepository;
 import com.progettosweng.application.service.StoriaService;
 import com.progettosweng.application.entity.Storia;
@@ -29,15 +30,24 @@ public class StoriaTest {
     @MockBean
     private StoriaRepository storiaRepository;
 
+    private User user = new User(
+            "User",
+            "123",
+            "Nome",
+            "Cognome"
+    );
+
     private Storia storia1 = new Storia(
             "Titolo della prima storia",
             "Descrizione della prima storia",
-            10
+            10,
+            user
     );
     private Storia storia2 = new Storia(
             "Titolo della seconda storia",
             "Descrizione della seconda storia",
-            15
+            15,
+            user
     );
 
     private List<Storia> lista = Arrays.asList(storia1, storia2);

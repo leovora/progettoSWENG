@@ -34,10 +34,11 @@ public class Storia{
     @JoinColumn(name = "user_id")
     private User creatore;
 
-    public Storia(String titolo, String descrizione, int numeroStato){
+    public Storia(String titolo, String descrizione, int numeroStato, User creatore){
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.numeroStato = numeroStato;
+        this.creatore = creatore;
     }
 
 }

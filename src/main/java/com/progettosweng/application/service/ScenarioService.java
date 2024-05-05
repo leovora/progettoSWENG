@@ -1,6 +1,7 @@
 package com.progettosweng.application.service;
 
 import com.progettosweng.application.entity.Scenario;
+import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.repository.ScenarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,10 @@ public class ScenarioService {
     private ScenarioRepository repository;
 
     public Scenario saveScenario(Scenario scenario){ return repository.save(scenario); }
+
+    public void deleteScenarioByIdStoria(Storia storia) {
+        repository.deleteByStoria(storia);
+    }
 
     public Scenario getScenario(int idScenario){
         return repository.findById(idScenario).orElse(null);
