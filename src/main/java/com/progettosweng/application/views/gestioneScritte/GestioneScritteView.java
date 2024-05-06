@@ -74,9 +74,6 @@ public class GestioneScritteView extends VerticalLayout {
         modificaStoria.addListener(ModificaStoria.SalvaEvent.class, this::salvaStoria);
         modificaStoria.addListener(ModificaStoria.EliminaEvent.class, this::eliminaStoria);
         modificaStoria.addListener(ModificaStoria.IndietroEvent.class, e -> closeEditor());
-
-
-
     }
 
     private void eliminaStoria(ModificaStoria.EliminaEvent event) {
@@ -116,7 +113,7 @@ public class GestioneScritteView extends VerticalLayout {
         grid.asSingleSelect().addValueChangeListener(e -> editStoria(e.getValue()));
     }
 
-    //
+    // metodo che mostra/nasconde il form di modifica della storia
     private void editStoria(Storia storia) {
         if(storia == null){
             closeEditor();
