@@ -16,8 +16,6 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.awt.*;
-
 @PageTitle("Storia | Gestione")
 @Route(value = "gestioneScritte", layout = MainLayout.class)
 @PermitAll
@@ -131,7 +129,7 @@ public class GestioneScritteView extends VerticalLayout {
 
     //metodo che popola la tabella
     private void updateList() {
-        grid.setItems(storiaService.getStorieUtente(username));
+        grid.setItems(storiaService.findAllStorieScritte(username, filterText.getValue()));
     }
 
 }
