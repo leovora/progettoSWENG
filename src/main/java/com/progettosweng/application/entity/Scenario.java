@@ -12,13 +12,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "STORIA")
-public class Storia{
+@Table(name = "SCENARIO")
+public class Scenario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IdStoria")
-    private int idStoria;
+    @Column(name = "IdScenario")
+    private int idScenario;
 
     @NotBlank
     @Column(name = "Titolo")
@@ -27,18 +27,15 @@ public class Storia{
     @Column(name = "Descrizione", length = 500)
     private String descrizione;
 
-    @Column(name = "NumeroStato")
-    private int numeroStato;
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User creatore;
+    @JoinColumn(name = "storia_id")
+    private Storia storia;
 
-    public Storia(String titolo, String descrizione, int numeroStato, User creatore){
+    //TODO: SCELTA
+
+    public Scenario(String titolo, String descrizione, Storia storia){
         this.titolo = titolo;
         this.descrizione = descrizione;
-        this.numeroStato = numeroStato;
-        this.creatore = creatore;
+        this.storia = storia;
     }
-
 }

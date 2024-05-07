@@ -15,14 +15,17 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
+    //salva utente
     public User saveUser(User user){
         return repository.save(user);
     }
 
+    //ritorna utente cercando username
     public User getUser(String username){
         return repository.findById(username).orElse(null);
     }
 
+    //true se esiste utente con username dato in input
     public boolean existsUserByUsername(String username) {
         return repository.existsByUsername(username);
 

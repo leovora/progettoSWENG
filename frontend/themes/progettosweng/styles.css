@@ -2,3 +2,10 @@
 vaadin-button:hover {
     border-color: blue;
   }
+
+@media all and (max-width: 1100px) {
+    .list-view.editing .toolbar,
+    .list-view.editing .storie-grid {
+        display: none;
+    }
+}
