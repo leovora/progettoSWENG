@@ -14,10 +14,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.component.dialog.Dialog;
-
-import java.awt.*;
 
 public class ModificaStoria extends FormLayout {
     Binder<Storia> binder = new BeanValidationBinder<>(Storia.class); // Binder per collegare i campi del form con l'oggetto Storia
@@ -36,6 +35,11 @@ public class ModificaStoria extends FormLayout {
         binder.bindInstanceFields(this);
         // Configurazione del Dialog per la conferma di eliminazione
         configureDialog();
+        // Configurazione del textfield per il numero massimo di caratteri
+        configureTitolo();
+        // Configurazione della textarea per il numero massimo di caratteri
+        configureDescrizione();
+
 
         add(
             titolo,
@@ -43,6 +47,26 @@ public class ModificaStoria extends FormLayout {
             createButtonLayout()
         );
 
+    }
+
+    //Mostra il numero di caratteri scritti e quelli disponibili per il titolo
+    private void configureTitolo() {
+        titolo.setMaxLength(50);
+        titolo.setValueChangeMode(ValueChangeMode.EAGER);
+        titolo.addValueChangeListener(e -> {
+            e.getSource()
+                    .setHelperText(e.getValue().length() + "/" + 50);
+        });
+    }
+
+    //Mostra il numero di caratteri scritti e quelli disponibili per la descrizione
+    private void configureDescrizione() {
+        descrizione.setMaxLength(500);
+        descrizione.setValueChangeMode(ValueChangeMode.EAGER);
+        descrizione.addValueChangeListener(e -> {
+            e.getSource()
+                    .setHelperText(e.getValue().length() + "/" + 500);
+        });
     }
 
     // Metodo per impostare la storia da modificare

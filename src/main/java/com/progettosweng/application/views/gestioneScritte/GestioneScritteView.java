@@ -106,7 +106,8 @@ public class GestioneScritteView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassName("storie-grid");
         grid.setSizeFull();
-        grid.setColumns("titolo", "descrizione");
+        grid.setColumns("titolo");
+        grid.addColumn(storia -> truncateString(storia.getDescrizione())).setHeader("Descrizione");
         grid.addColumn("numeroStato").setHeader("Numero scenari");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
@@ -129,4 +130,12 @@ public class GestioneScritteView extends VerticalLayout {
         grid.setItems(storiaService.findAllStorieScritte(username, filterText.getValue()));
     }
 
+    // Metodo per limitare la lunghezza della descrizione
+    private String truncateString(String stringa) {
+        if (stringa.length() <= 50) {
+            return stringa;
+        } else {
+            return stringa.substring(0, 50) + "...";
+        }
+    }
 }
