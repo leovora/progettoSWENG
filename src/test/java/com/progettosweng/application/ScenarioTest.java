@@ -48,14 +48,16 @@ public class ScenarioTest{
             1,
             "Primo scenario",
             "Descrizione del primo scenario",
-            storia
+            storia,
+            5
     );
 
     private Scenario scenario2 = new Scenario(
             2,
             "Secondo scenario",
             "Descrizione del secondo scenario",
-            storia
+            storia,
+            6
     );
 
     private List<Scenario> lista = Arrays.asList(scenario1, scenario2);
