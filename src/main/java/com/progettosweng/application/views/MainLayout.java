@@ -80,8 +80,10 @@ public class MainLayout extends AppLayout {
         nav.addItem(new SideNavItem("Home", HomeView.class));
         nav.addItem(new SideNavItem("Catalogo", CatalogoView.class));
         nav.addItem(new SideNavItem("Scrittura storia", ScritturaView.class));
+        nav.addItem(new SideNavItem("Scrittura scena", ScritturaView.class));
         nav.addItem(new SideNavItem("Gestione storie scritte", GestioneScritteView.class));
         nav.addItem(new SideNavItem("Gestione storie giocate", GestioneGiocateView.class));
+
 
         return nav;
     }

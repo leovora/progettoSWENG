@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class ScenarioService {
@@ -36,4 +37,14 @@ public class ScenarioService {
         Collection<Scenario> scenari = repository.findAll();
         return new ArrayList<>(scenari);
     }
+    public List<Scenario> getScenariByStoria(Storia storia) {
+        return repository.findByStoria(storia);
+    }
+    public List<Scenario> getAllScenariByLoggedInUser(String username) {
+        return repository.findAllByUserUsername(username);
+    }
+
 }
+
+
+

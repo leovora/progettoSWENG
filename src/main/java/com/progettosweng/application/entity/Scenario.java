@@ -2,13 +2,10 @@ package com.progettosweng.application.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Data
+@Data // Lombok annotation to generate getters, setters, toString, equals and hashcode
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -31,11 +28,16 @@ public class Scenario {
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
-    //TODO: SCELTA
+    @Column(name = "numero_scenario") // Adding the new column for storing the scenario number in a story
+    private int numeroScenario; // This will keep track of the scenario number within its story
 
-    public Scenario(String titolo, String descrizione, Storia storia){
+    public Scenario(String titolo, String descrizione, Storia storia, int numeroScenario){
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.storia = storia;
+        this.numeroScenario = numeroScenario;
     }
+
+    // No need to manually add setters for `numeroScenario` as Lombok's @Data generates them.
+    // If you need to perform additional operations when setting the numeroScenario, you can still implement a custom setter.
 }
