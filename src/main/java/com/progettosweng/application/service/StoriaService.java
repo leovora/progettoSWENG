@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StoriaService {
@@ -84,4 +85,8 @@ public class StoriaService {
         return repository.findByUsername(user);
     }
 
+    public Storia findStoriaById(int idStoria) {
+        Optional<Storia> optionalStoria = repository.findById(idStoria);
+        return optionalStoria.orElse(null);
+    }
 }
