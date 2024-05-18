@@ -18,9 +18,12 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @AnonymousAllowed
 @PageTitle("Storia | Scrittura")
@@ -54,7 +57,8 @@ public class ScritturaView extends VerticalLayout {
         descrizione.setWidth("50%");
         numScenari.setWidth("50%");
 
-        VerticalLayout tablesLayout = new VerticalLayout(); // Layout per contenere le tabelle
+        VerticalLayout tablesLayout = new VerticalLayout(); // Layout che contiene le tabelle
+
         tablesLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER); // Centra i componenti all'interno del layout
         tablesLayout.setWidth("100%");
         tablesLayout.getStyle().set("overflow-y", "auto"); // Aggiungi uno scroll verticale
@@ -70,16 +74,25 @@ public class ScritturaView extends VerticalLayout {
         );
 
         numScenari.addValueChangeListener(event -> {
-            tablesLayout.removeAll(); // Rimuovi le tabelle esistenti
+            tablesLayout.removeAll();
 
             int numTables = event.getValue().intValue();
             for (int i = 0; i < numTables; i++) {
-                TextField textField = new TextField("Scenario " + (i + 1)); // Creazione del campo per la tabella
-                TextField titoloScenario = new TextField("Titolo");
-                TextArea descrizioneScenario = new TextArea("Descrizione");
-                NumberField numeroCollegamenti = new NumberField("Numero collegamenti");
+                TextField titoloScenario = new TextField("Titolo" + (i + 1));
+                TextArea descrizioneScenario = new TextArea("Descrizione"+ (i + 1));
 
-                VerticalLayout tableRow = new VerticalLayout(textField, titoloScenario,descrizioneScenario, numeroCollegamenti);
+                int finalI = i;
+                Button salvaScenarioButton = new Button("Salva", e -> {
+                    Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
+                    if (idStoria != null) {
+                        salvaScenario(titoloScenario.getValue(), descrizioneScenario.getValue(), idStoria.intValue(), finalI + 1);
+                    } else {
+                        Notification.show("L'ID della storia non è stato impostato correttamente nella sessione");
+                    }
+                });
+
+                VerticalLayout tableRow = new VerticalLayout( titoloScenario,descrizioneScenario, salvaScenarioButton);
+
 
                 tableRow.setWidth("100%");
                 tableRow.setPadding(true);
@@ -91,9 +104,8 @@ public class ScritturaView extends VerticalLayout {
             }
         });
 
+        add(titolo, descrizione, numScenari, salva,tablesLayout );
 
-        // Add components to the layout
-        add(titolo, descrizione, numScenari, tablesLayout, salva);
     }
 
     private void salvaStoria(String username, String titolo, String descrizione, Double numScenari) {
@@ -101,6 +113,18 @@ public class ScritturaView extends VerticalLayout {
         Storia storia = new Storia(titolo, descrizione, numScenari.intValue(), user);
         storiaService.saveStoria(storia);
         Notification.show("Storia aggiunta");
+
+        // Salva l'ID della storia nella sessione
+        VaadinSession.getCurrent().setAttribute("idStoria", storia.getId());
+    }
+
+    private void salvaScenario(String titolo, String descrizione, int idStoria, int nScenari) {
+        // Trova la storia corrispondente all'ID
+        Storia storia = storiaService.findStoriaById(idStoria);
+
+        Scenario scenario = new Scenario(titolo, descrizione, storia, nScenari);
+        scenarioService.saveScenario(scenario);
+        Notification.show("Scenario aggiunto");
     }
 
 
