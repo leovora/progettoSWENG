@@ -22,7 +22,6 @@ import com.vaadin.flow.server.VaadinSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -58,9 +57,8 @@ public class ScritturaView extends VerticalLayout {
         descrizione.setWidth("50%");
         numScenari.setWidth("50%");
 
-
-
         VerticalLayout tablesLayout = new VerticalLayout(); // Layout che contiene le tabelle
+
         tablesLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER); // Centra i componenti all'interno del layout
         tablesLayout.setWidth("100%");
         tablesLayout.getStyle().set("overflow-y", "auto"); // Aggiungi uno scroll verticale
@@ -95,6 +93,7 @@ public class ScritturaView extends VerticalLayout {
 
                 VerticalLayout tableRow = new VerticalLayout( titoloScenario,descrizioneScenario, salvaScenarioButton);
 
+
                 tableRow.setWidth("100%");
                 tableRow.setPadding(true);
                 tableRow.setMargin(true);
@@ -105,8 +104,8 @@ public class ScritturaView extends VerticalLayout {
             }
         });
 
-
         add(titolo, descrizione, numScenari, salva,tablesLayout );
+
     }
 
     private void salvaStoria(String username, String titolo, String descrizione, Double numScenari) {
@@ -127,4 +126,6 @@ public class ScritturaView extends VerticalLayout {
         scenarioService.saveScenario(scenario);
         Notification.show("Scenario aggiunto");
     }
+
+
 }

@@ -1,0 +1,16 @@
+LINK UTILI:
+
+Diario di progetto:
+https://docs.google.com/document/d/1CB4Nj-ppM9G_bK-cBhLCoQB5R7aqlwYmQCJqKmThVbE/edit
+
+Manuale dello sviluppatore:
+https://docs.google.com/document/d/1DkqmRd9IfRRmYg-jhj_Q5sjLzQEj_GZI2FO8WXrRJLs/edit
+
+Manuale dell'utente:
+https://docs.google.com/document/d/1DcI4OWJ2dbmKapmuQSLBzTiJIVoyyo8rAk8qQzBM-bM/edit
+
+Progetto GitHub:
+https://github.com/users/leovora/projects/1/views/1
+
+Specifiche del progetto:
+https://docs.google.com/document/d/e/2PACX-1vQT60002z4ymBNlmkg-5S2xZ4z1RUGPX2GqMxegJK7sw6_dsQEfgzr_lN7A0EqXwLioOlCCS_aSB3rO/pub
