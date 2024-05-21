@@ -43,4 +43,7 @@ public class Storia{
  public int getId(){
         return this.idStoria;
  }
+    public void setNScenari(int numeroStato) {
+        this.numeroStato = numeroStato;
+    }
 }
