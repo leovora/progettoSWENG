@@ -1,15 +1,15 @@
 package com.progettosweng.application.service;
 
 import com.progettosweng.application.entity.Collegamento;
-import com.progettosweng.application.repository.ScenarioLinkRepository;
+import com.progettosweng.application.repository.CollegamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScenarioLinkService {
+public class CollegamentoService {
 
     @Autowired
-    private ScenarioLinkRepository scenarioLinkRepository;
+    private CollegamentoRepository scenarioLinkRepository;
 
     public Collegamento saveCollegamento(Collegamento collegamento) {
         return scenarioLinkRepository.save(collegamento);

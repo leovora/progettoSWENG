@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data // Lombok annotation to generate getters, setters, toString, equals and hashcode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Table(name = "COLLEGAMENTO")
-public class Collegamento {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Collegamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
