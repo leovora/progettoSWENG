@@ -13,4 +13,8 @@ import lombok.ToString;
 @Table(name = "SCELTA_SEMPLICE")
 public class SceltaSemplice extends Collegamento{
     //estende un normale collegamento
+
+    public SceltaSemplice(Scenario scenario1, Scenario scenario2, String nomeScelta){
+        super(scenario1, scenario2, nomeScelta);
+    }
 }

@@ -26,5 +26,10 @@ public class Oggetto {
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
+    //scenario in cui si raccoglie l'oggetto
+    @ManyToOne
+    @JoinColumn(name = "scenario_id")
+    private Scenario scenario;
+
 
 }

@@ -1,8 +1,6 @@
 package com.progettosweng.application.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +19,16 @@ public class SceltaIndovinello extends Collegamento{
 
     @Column(name = "Risposta")
     private String risposta;
+
+    //In caso di risposta sbagliata all'indovinello collegamento ad altro scenario
+    @ManyToOne
+    @JoinColumn(name = "scenarioSbagliato_id")
+    private Scenario scenarioSbagliato;
+
+    public SceltaIndovinello(Scenario scenario1, Scenario scenario2, String nomeScelta, String domanda, String risposta, Scenario scenarioSbagliato) {
+        super(scenario1, scenario2, nomeScelta);
+        this.domanda = domanda;
+        this.risposta = risposta;
+        this.scenarioSbagliato = scenarioSbagliato;
+    }
 }
