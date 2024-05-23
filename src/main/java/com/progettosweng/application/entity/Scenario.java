@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -28,14 +31,15 @@ public class Scenario {
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
-//    @Column(name = "numero_scenario") // Adding the new column for storing the scenario number in a story
-//    private int numeroScenario; // This will keep track of the scenario number within its story
+    @OneToMany(mappedBy = "scenario1", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Collegamento> collegamentiDaScenario1 = new ArrayList<>();
 
-    public Scenario(String titolo, String descrizione, Storia storia, int numeroScenario){
+    @OneToMany(mappedBy = "scenario2", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Collegamento> collegamentiDaScenario2 = new ArrayList<>();
+
+    public Scenario(String titolo, String descrizione, Storia storia) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.storia = storia;
-        //this.numeroScenario = numeroScenario;
     }
-
 }

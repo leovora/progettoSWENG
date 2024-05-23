@@ -21,7 +21,7 @@ public class SceltaIndovinello extends Collegamento{
     private String risposta;
 
     //In caso di risposta sbagliata all'indovinello collegamento ad altro scenario
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "scenarioSbagliato_id")
     private Scenario scenarioSbagliato;
 

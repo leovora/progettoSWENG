@@ -22,12 +22,12 @@ public class Oggetto {
     @Column(name = "NomeOggetto")
     private String nomeOggetto;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
     //scenario in cui si raccoglie l'oggetto
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;
 
