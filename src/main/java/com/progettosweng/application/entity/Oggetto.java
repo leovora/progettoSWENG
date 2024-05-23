@@ -31,5 +31,11 @@ public class Oggetto {
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;
 
+    public Oggetto(String nomeOggetto, Storia storia, Scenario scenario){
+        this.nomeOggetto = nomeOggetto;
+        this.storia = storia;
+        this.scenario = scenario;
+    }
+
 
 }

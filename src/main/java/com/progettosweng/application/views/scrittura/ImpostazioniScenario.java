@@ -20,6 +20,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.security.PermitAll;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -55,11 +56,13 @@ public class ImpostazioniScenario extends VerticalLayout {
     private Button aggiungiCollegamento;
     private Button aggiungiOggetto;
     private Dialog dialogCollegamento;
+    private Dialog dialogOggetto;
     private ComboBox<Scenario> comboBoxScenario;
     private TextField domandaIndovinello;
     private TextField rispostaIndovinello;
     private ComboBox<Oggetto> comboBoxOggetto;
     private TextField nomeScelta;
+    private TextField nomeOggetto;
 
     public ImpostazioniScenario(StoriaService storiaService, ScenarioService scenarioService) {
         this.storiaService = storiaService;
@@ -75,6 +78,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         add(titoloPagina, container);
 
+        configDialogOggetto();
         configDialogCollegamento();
         updateScenario();
     }
@@ -95,7 +99,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         VerticalLayout verticalLayout = new VerticalLayout(titoloScenario, descrizioneScenario);
 
         HorizontalLayout buttonLayout = new HorizontalLayout(
-                aggiungiOggetto = new Button("Aggiungi oggetto"),
+                aggiungiOggetto = new Button("Aggiungi oggetto", e -> dialogOggetto.open()),
                 aggiungiCollegamento = new Button("Aggiungi collegamento", e -> dialogCollegamento.open())
         );
         buttonLayout.getStyle().setMarginTop("50px");
@@ -134,6 +138,31 @@ public class ImpostazioniScenario extends VerticalLayout {
             currentIndex++;
             updateScenario();
         }
+    }
+
+    private void configDialogOggetto() {
+        dialogOggetto = new Dialog();
+        VerticalLayout verticalLayout = new VerticalLayout();
+
+        H2 titoloOggetto = new H2("Aggiunta nuovo oggetto");
+        nomeOggetto = new TextField("Nome oggetto");
+        nomeOggetto.isRequired();
+        Button salva = new Button("Salva oggetto", e -> salvaOggetto());
+
+        verticalLayout.add(titoloOggetto, nomeOggetto, salva);
+        dialogOggetto.add(verticalLayout);
+
+    }
+
+    private void salvaOggetto() {
+        Scenario currentScenario = scenari.get(currentIndex);
+        Oggetto oggetto = new Oggetto(nomeOggetto.getValue(),
+                storia,
+                currentScenario
+        );
+        oggettoService.saveOggetto(oggetto);
+        dialogOggetto.close();
+        Notification.show("Oggetto salvato");
     }
 
     private void configDialogCollegamento() {
