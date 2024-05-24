@@ -14,5 +14,7 @@ public class OggettoService {
     @Autowired
     private OggettoRepository oggettoRepository;
 
+    public Oggetto saveOggetto(Oggetto oggetto){return oggettoRepository.save(oggetto);}
+
     public List<Oggetto> getOggettiStoria(Storia storia) {return oggettoRepository.findByStoria(storia);}
 }

@@ -37,6 +37,9 @@ public class Scenario {
     @OneToMany(mappedBy = "scenario2", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Collegamento> collegamentiDaScenario2 = new ArrayList<>();
 
+    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Oggetto> oggettiCollegati = new ArrayList<>();
+
     public Scenario(String titolo, String descrizione, Storia storia) {
         this.titolo = titolo;
         this.descrizione = descrizione;
