@@ -80,7 +80,7 @@ public class ScenarioView extends VerticalLayout {
                 Scenario newScenario = new Scenario();
                 newScenario.setTitolo(scenarioTitolo.getValue());
                 newScenario.setDescrizione(scenarioDescrizione.getValue());
-                newScenario.setNumeroScenario(comboBoxScenari.getValue());  //metodo in scenario
+                //newScenario.setNumeroScenario(comboBoxScenari.getValue());  //metodo in scenario
                 newScenario.setStoria(comboBoxTitoli.getValue());
                 scenarioService.saveScenario(newScenario);
                 Notification.show("Scenario salvato con successo!");
