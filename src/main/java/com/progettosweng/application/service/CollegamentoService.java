@@ -1,25 +1,26 @@
 package com.progettosweng.application.service;
 
 import com.progettosweng.application.entity.Collegamento;
-import com.progettosweng.application.repository.ScenarioLinkRepository;
+import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.repository.CollegamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScenarioLinkService {
+public class CollegamentoService {
 
     @Autowired
-    private ScenarioLinkRepository scenarioLinkRepository;
+    private CollegamentoRepository collegamentoRepository;
 
     public Collegamento saveCollegamento(Collegamento collegamento) {
-        return scenarioLinkRepository.save(collegamento);
+        return collegamentoRepository.save(collegamento);
     }
 
     public void deleteCollegamento(int id) {
-        scenarioLinkRepository.deleteById(id);
+        collegamentoRepository.deleteById(id);
     }
 
     public Collegamento findCollegamentoById(int id) {
-        return scenarioLinkRepository.findById(id).orElse(null);
+        return collegamentoRepository.findById(id).orElse(null);
     }
 }

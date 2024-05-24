@@ -183,7 +183,7 @@ public class ScritturaView extends VerticalLayout {
         scenarioCount++;
 
 
-        Scenario scenario = new Scenario(titolo, descrizione, storia, scenarioCount);
+        Scenario scenario = new Scenario(titolo, descrizione, storia);
         scenarioService.saveScenario(scenario);
 
         storia.setNScenari(scenarioCount);

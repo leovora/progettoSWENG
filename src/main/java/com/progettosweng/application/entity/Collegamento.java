@@ -4,17 +4,21 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Data // Lombok annotation to generate getters, setters, toString, equals and hashcode
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Table(name = "COLLEGAMENTO")
-public class Collegamento {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Collegamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdCollegamento")
     private int idCollegamento;
+
+    @Column(name = "nomeScelta")
+    private String nomeScelta;
 
     @ManyToOne
     @JoinColumn(name = "IdScenario1", referencedColumnName = "IdScenario")
@@ -24,8 +28,9 @@ public class Collegamento {
     @JoinColumn(name = "IdScenario2", referencedColumnName = "IdScenario")
     private Scenario scenario2;
 
-    public Collegamento(Scenario scenario1, Scenario scenario2) {
+    public Collegamento(Scenario scenario1, Scenario scenario2, String nomeScelta) {
         this.scenario1 = scenario1;
         this.scenario2 = scenario2;
+        this.nomeScelta = nomeScelta;
     }
 }

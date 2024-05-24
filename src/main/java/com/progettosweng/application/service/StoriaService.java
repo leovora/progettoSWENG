@@ -1,5 +1,6 @@
 package com.progettosweng.application.service;
 
+import com.progettosweng.application.entity.Collegamento;
 import com.progettosweng.application.entity.Scenario;
 import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.entity.User;
@@ -22,6 +23,9 @@ public class StoriaService {
 
     @Autowired
     private ScenarioService scenarioService;
+
+    @Autowired
+    private CollegamentoService collegamentoService;
 
 
     //salva storia
