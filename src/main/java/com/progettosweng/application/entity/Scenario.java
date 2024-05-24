@@ -27,22 +27,34 @@ public class Scenario {
     @Column(name = "Descrizione", length = 500)
     private String descrizione;
 
+    @Column(name = "PrimoScenario")
+    private Boolean primoScenario;
+
     @ManyToOne
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
-    @OneToMany(mappedBy = "scenario1", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Collegamento> collegamentiDaScenario1 = new ArrayList<>();
+//    @OneToMany(mappedBy = "scenario1", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Collegamento> collegamentiDaScenario1 = new ArrayList<>();
 
-    @OneToMany(mappedBy = "scenario2", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Collegamento> collegamentiDaScenario2 = new ArrayList<>();
-
-    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Oggetto> oggettiCollegati = new ArrayList<>();
+//    @OneToMany(mappedBy = "scenario2", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Collegamento> collegamentiDaScenario2 = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "scenario", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Oggetto> oggettiCollegati = new ArrayList<>();
 
     public Scenario(String titolo, String descrizione, Storia storia) {
         this.titolo = titolo;
         this.descrizione = descrizione;
         this.storia = storia;
+        this.primoScenario = false;
+    }
+
+    public Scenario(int id, String titolo, String descrizione, Storia storia) {
+        this.idScenario = id;
+        this.titolo = titolo;
+        this.descrizione = descrizione;
+        this.storia = storia;
+        this.primoScenario = false;
     }
 }

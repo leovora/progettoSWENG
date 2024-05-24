@@ -40,10 +40,4 @@ public class Storia{
         this.numeroStato = numeroStato;
         this.creatore = creatore;
     }
- public int getId(){
-        return this.idStoria;
- }
-    public void setNScenari(int numeroStato) {
-        this.numeroStato = numeroStato;
-    }
 }

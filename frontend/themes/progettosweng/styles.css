@@ -9,3 +9,21 @@ vaadin-button:hover {
         display: none;
     }
 }
+
+.centered-dialog-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.centered-dialog-overlay::before {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.centered-dialog {
+    width: 100%;
+    box-sizing: border-box;
+}
