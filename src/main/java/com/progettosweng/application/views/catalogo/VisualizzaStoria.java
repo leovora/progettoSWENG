@@ -8,7 +8,6 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -34,13 +33,14 @@ public class VisualizzaStoria extends FormLayout {
         titolo.setReadOnly(true);
         descrizione.setReadOnly(true);
 
-
         add(
                 titolo,
                 descrizione,
                 createButtonLayout()
         );
 
+        // Aggiungi il listener per il pulsante "Gioca"
+        gioca.addClickListener(event -> fireEvent(new GiocaEvent(this, storia)));
     }
 
     // Metodo per impostare la storia da modificare
@@ -54,6 +54,7 @@ public class VisualizzaStoria extends FormLayout {
         gioca.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         indietro.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
+        gioca.addClickListener(event -> fireEvent(new VisualizzaStoria.GiocaEvent(this, storia)));
         indietro.addClickListener(event -> fireEvent(new VisualizzaStoria.IndietroEvent(this)));
 
         gioca.addClickShortcut(Key.ENTER);
@@ -62,13 +63,7 @@ public class VisualizzaStoria extends FormLayout {
         return new HorizontalLayout(gioca, mostraScenario, indietro);
     }
 
-    /*
-    Si potrebbero usare delle invocazioni di metodi normali,
-    ma l'utilizzo degli eventi aiuta a mantenere un basso
-    decoupling e separare le responsabilità
-     */
-
-    // Classe astratta che rappresenta un evento generico associato alla modifica di una storia
+    // Classe astratta che rappresenta un evento generico associato alla visualizzazione di una storia
     public static abstract class VisualizzaStoriaEvent extends ComponentEvent<VisualizzaStoria> {
         private Storia storia;
 
@@ -83,17 +78,22 @@ public class VisualizzaStoria extends FormLayout {
         }
     }
 
+    // Evento personalizzato per il pulsante "Gioca"
+    public static class GiocaEvent extends VisualizzaStoriaEvent {
+        GiocaEvent(VisualizzaStoria source, Storia storia) {
+            super(source, storia);
+        }
+    }
 
-    // Sottoclasse di ModificaStoriaEvent che rappresenta un evento di ritorno alla pagina precedente
+    // Sottoclasse di VisualizzaStoriaEvent che rappresenta un evento di ritorno alla pagina precedente
     public static class IndietroEvent extends VisualizzaStoria.VisualizzaStoriaEvent {
         IndietroEvent(VisualizzaStoria source){
             super(source, null);
         }
     }
 
-    // Metodo per aggiungere un listener per gestire gli eventi generici associati alla modifica di una storia
+    // Metodo per aggiungere un listener per gestire gli eventi generici associati alla visualizzazione di una storia
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener){
         return getEventBus().addListener(eventType, listener); // Delega l'aggiunta del listener all'eventBus della classe
     }
-
 }

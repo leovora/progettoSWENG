@@ -34,4 +34,6 @@ public class CollegamentoService {
     }
 
     public List<Collegamento> getCollegamentoByScenario(Scenario scenario) { return collegamentoRepository.findByScenario1(scenario);}
+
+    public Scenario eseguiScelta(Collegamento collegamento){ return collegamento.eseguiScelta(); }
 }

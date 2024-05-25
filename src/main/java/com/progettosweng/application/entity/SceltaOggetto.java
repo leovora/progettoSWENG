@@ -22,4 +22,10 @@ public class SceltaOggetto extends Collegamento{
         super(scenario1, scenario2, nomeScelta);
         this.oggettoRichiesto = oggettoRichiesto;
     }
+
+    @Override
+    public Scenario eseguiScelta(){
+        //TODO
+        return this.getScenario2();
+    }
 }

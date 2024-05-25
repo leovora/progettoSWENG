@@ -1,10 +1,18 @@
 package com.progettosweng.application.entity;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.scheduling.annotation.Async;
+
+import java.util.concurrent.CompletableFuture;
 
 @Entity
 @Data
@@ -31,4 +39,40 @@ public class SceltaIndovinello extends Collegamento{
         this.risposta = risposta;
         this.scenarioSbagliato = scenarioSbagliato;
     }
+
+    //TODO
+//    @Override
+//    public Scenario eseguiScelta() {
+//        CompletableFuture<Scenario> future = new CompletableFuture<>();
+//
+//        Dialog dialog = new Dialog();
+//        H2 domandaIndovinello = new H2(this.domanda);
+//        TextField rispostaGiocatore = new TextField("Risposta");
+//        Button conferma = new Button("Conferma");
+//
+//        VerticalLayout verticalLayout = new VerticalLayout(domandaIndovinello, rispostaGiocatore, conferma);
+//        dialog.add(verticalLayout);
+//        dialog.open();
+//
+//        conferma.addClickListener(e -> {
+//            dialog.close();
+//        });
+//
+//        dialog.addDialogCloseActionListener(e -> {
+//            if (this.risposta.equalsIgnoreCase(rispostaGiocatore.getValue())) {
+//                future.complete(this.getScenario2());
+//            } else {
+//                future.complete(this.scenarioSbagliato);
+//            }
+//        });
+//
+//        // Restituisci il futuro
+//        return future.join();
+//    }
+
+    @Override
+    public Scenario eseguiScelta() {
+        return null;
+    }
+
 }

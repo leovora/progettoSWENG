@@ -33,4 +33,6 @@ public abstract class Collegamento {
         this.scenario2 = scenario2;
         this.nomeScelta = nomeScelta;
     }
+
+    public abstract Scenario eseguiScelta();
 }

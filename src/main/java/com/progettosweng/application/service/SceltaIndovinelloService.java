@@ -1,5 +1,6 @@
 package com.progettosweng.application.service;
 
+import com.progettosweng.application.entity.Collegamento;
 import com.progettosweng.application.entity.SceltaIndovinello;
 import com.progettosweng.application.repository.SceltaIndovinelloRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,4 +13,6 @@ public class SceltaIndovinelloService {
     private SceltaIndovinelloRepository sceltaIndovinelloRepository;
 
     public SceltaIndovinello saveSceltaIndovinello(SceltaIndovinello scelta) {return sceltaIndovinelloRepository.save(scelta);}
+
+    public SceltaIndovinello getSceltaIndovinelloCollegamento(int idCollegamento){ return sceltaIndovinelloRepository.findByIdCollegamento(idCollegamento);}
 }

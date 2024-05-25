@@ -53,6 +53,10 @@ public class ScenarioService {
         repository.save(scenario);
     }
 
+    public Scenario getPrimoScenario(Storia storia){
+        return repository.getPrimoScenario(storia);
+    }
+
 }
 
 
