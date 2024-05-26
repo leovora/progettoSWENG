@@ -1,6 +1,5 @@
 package com.progettosweng.application.service;
 
-import com.progettosweng.application.entity.SceltaIndovinello;
 import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.entity.User;
 import com.progettosweng.application.repository.StoriaRepository;
@@ -34,17 +33,17 @@ public class StoriaService {
     @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
 
-    @Autowired SceltaSempliceService sceltaSempliceService;
+    @Autowired
+    private SceltaSempliceService sceltaSempliceService;
 
-
-    //salva storia
-    public Storia saveStoria(Storia storia){
+    // Salva storia
+    public Storia saveStoria(Storia storia) {
         return repository.save(storia);
     }
 
-    //elimina storia e tutti i suoi scenari
+    // Elimina storia e tutti i suoi scenari
     @Transactional
-    public void deleteStoria(Storia storia){
+    public void deleteStoria(Storia storia) {
         inventarioService.deleteInventarioByStoria(storia);
         sceltaSempliceService.deleteSceltaSempliceByStoria(storia);
         sceltaIndovinelloService.deleteSceltaIndovinelloByStoria(storia);
@@ -54,53 +53,53 @@ public class StoriaService {
         repository.delete(storia);
     }
 
-    //ritorna storia dal suo ID
-    public Storia getStoria(int idStoria){
+    // Ritorna storia dal suo ID
+    public Storia getStoria(int idStoria) {
         return repository.findById(idStoria).orElse(null);
     }
 
-    //true se storia con quell'ID esiste
+    // True se storia con quell'ID esiste
     public Boolean existsStoria(int idStoria) {
         return repository.existsById(idStoria);
     }
 
-    //true se nessuna storia presente
+    // True se nessuna storia presente
     public boolean isEmpty() {
         return repository.count() == 0;
     }
 
-    //ritorna tutte le storie
+    // Ritorna tutte le storie
     public ArrayList<Storia> getAllStorie() {
         Collection<Storia> storie = repository.findAll();
         return new ArrayList<>(storie);
     }
 
-    //ritorna tutte le storie se nessun filtro, altrimenti filtra
+    // Ritorna tutte le storie se nessun filtro, altrimenti filtra
     public List<Storia> findAllStorie(String filtro) {
-        if(filtro == null || filtro.isEmpty()){
+        if (filtro == null || filtro.isEmpty()) {
             return repository.findAll();
-        } else{
+        } else {
             return repository.search(filtro);
         }
     }
 
-    //ritorna tutte le storie dell'utente loggato se nessun filtro, altrimenti filtra
+    // Ritorna tutte le storie dell'utente loggato se nessun filtro, altrimenti filtra
     public List<Storia> findAllStorieScritte(String username, String filtro) {
-        if(filtro == null || filtro.isEmpty()){
+        if (filtro == null || filtro.isEmpty()) {
             return repository.findByUsername(username);
-        } else{
+        } else {
             return repository.searchOwn(username, filtro);
         }
     }
 
-    //ritorna creatore di una storia
-    public User getCreatore(int idStoria){
+    // Ritorna creatore di una storia
+    public User getCreatore(int idStoria) {
         Storia storia = getStoria(idStoria);
         return storia.getCreatore();
     }
 
-    //ritorna tutte le storie scritte da un utente
-    public ArrayList<Storia> getStorieUtente(String user){
+    // Ritorna tutte le storie scritte da un utente
+    public ArrayList<Storia> getStorieUtente(String user) {
         return repository.findByUsername(user);
     }
 

@@ -25,7 +25,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.shared.Registration;
 import jakarta.annotation.security.PermitAll;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -95,7 +94,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         configDialogOggetto();
         configDialogCollegamento();
-        //configScelteTable();
+        configScelteTable();
         updateScenario();
     }
 
@@ -173,7 +172,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         precedente.setEnabled(currentIndex != 0);
         updateContaCollegamenti();
-        //updateScelteTable();
+        updateScelteTable();
     }
 
     private void nextScenario() {
@@ -182,7 +181,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         }
         else if (currentIndex < scenari.size() - 1) {
             currentIndex++;
-            //configScelteTable();
+            configScelteTable();
             updateScenario();
         }
     }
@@ -190,7 +189,7 @@ public class ImpostazioniScenario extends VerticalLayout {
     private void previousScenario() {
         if (currentIndex > 0) {
             currentIndex--;
-            //configScelteTable();
+            configScelteTable();
             updateScenario();
         }
     }
@@ -313,10 +312,10 @@ public class ImpostazioniScenario extends VerticalLayout {
             );
 
             sceltaSempliceService.saveSceltaSemplice(scelta);
-            //collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
+            collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
             dialogCollegamento.close();
-            //configScelteTable();
-            //updateScelteTable();
+            configScelteTable();
+            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -347,8 +346,8 @@ public class ImpostazioniScenario extends VerticalLayout {
 
             sceltaIndovinelloService.saveSceltaIndovinello(scelta);
             dialogCollegamento.close();
-            //configScelteTable();
-            //updateScelteTable();
+            configScelteTable();
+            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -369,8 +368,8 @@ public class ImpostazioniScenario extends VerticalLayout {
 
             sceltaSempliceService.saveSceltaSemplice(scelta);
             dialogCollegamento.close();
-            //configScelteTable();
-            //updateScelteTable();
+            configScelteTable();
+            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -382,37 +381,37 @@ public class ImpostazioniScenario extends VerticalLayout {
     }
 
     //TODO: Sistema tabella che mostra scelte inserite
-//    private void configScelteTable() {
-//        // Rimuovi tutte le colonne esistenti
-//        scelteTable.removeAllColumns();
-//
-//        // Aggiungi le colonne con espressioni lambda corrette
-//        scelteTable.addColumn(Collegamento::getNomeScelta).setHeader("Nome Scelta");
-//        scelteTable.addColumn(collegamento -> collegamento.getScenario2().getTitolo()).setHeader("Scenario Destinazione");
-//
-//        // Imposta l'altezza massima della tabella
-//        scelteTable.setMaxHeight("300px");
-//
-//        // Imposta la modalità di selezione
-//        scelteTable.setSelectionMode(Grid.SelectionMode.NONE);
-//
-//        // Carica i collegamenti e aggiorna la tabella
-//        updateScelteTable();
-//    }
-//
-//    private void updateScelteTable() {
-//        // Carica i collegamenti per lo scenario corrente
-//        List<Collegamento> collegamenti = collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex));
-//
-//        // Verifica il contenuto della lista
-//        System.out.println("Collegamenti caricati: " + collegamenti.size());
-//        for (Collegamento collegamento : collegamenti) {
-//            System.out.println("Nome Scelta: " + collegamento.getNomeScelta() + ", Scenario Destinazione: " + collegamento.getScenario2().getTitolo());
-//        }
-//
-//        // Aggiorna la tabella con i nuovi dati
-//        scelteTable.setItems(collegamenti);
-//    }
+    private void configScelteTable() {
+        // Rimuovi tutte le colonne esistenti
+        scelteTable.removeAllColumns();
+
+        // Aggiungi le colonne con espressioni lambda corrette
+        scelteTable.addColumn(Collegamento::getNomeScelta).setHeader("Nome Scelta");
+        scelteTable.addColumn(collegamento -> collegamento.getScenario2().getTitolo()).setHeader("Scenario Destinazione");
+
+        // Imposta l'altezza massima della tabella
+        scelteTable.setMaxHeight("300px");
+
+        // Imposta la modalità di selezione
+        scelteTable.setSelectionMode(Grid.SelectionMode.NONE);
+
+        // Carica i collegamenti e aggiorna la tabella
+        updateScelteTable();
+    }
+
+    private void updateScelteTable() {
+        // Carica i collegamenti per lo scenario corrente
+        List<Collegamento> collegamenti = collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex));
+
+        // Verifica il contenuto della lista
+        System.out.println("Collegamenti caricati: " + collegamenti.size());
+        for (Collegamento collegamento : collegamenti) {
+            System.out.println("Nome Scelta: " + collegamento.getNomeScelta() + ", Scenario Destinazione: " + collegamento.getScenario2().getTitolo());
+        }
+
+        // Aggiorna la tabella con i nuovi dati
+        scelteTable.setItems(collegamenti);
+    }
 
     public void updateContaCollegamenti() {
         contaCollegamenti.remove();

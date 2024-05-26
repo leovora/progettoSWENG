@@ -57,6 +57,8 @@ public class ScenarioService {
         return repository.getPrimoScenario(storia);
     }
 
+    public List<Scenario> getScenariFiltro(String filtro, int storia){ return repository.getScenariFiltro(filtro, storia);}
+
 }
 
 

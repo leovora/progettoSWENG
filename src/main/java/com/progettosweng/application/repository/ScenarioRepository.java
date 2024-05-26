@@ -21,4 +21,8 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Integer> {
     @Query("SELECT s FROM Scenario  s WHERE s.storia = :storia AND s.primoScenario = true")
     Scenario getPrimoScenario(Storia storia);
 
+    @Query("SELECT s FROM Scenario s JOIN s.storia ss " +
+            "WHERE ss.idStoria = :storia " +
+            "AND LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+    List<Scenario> getScenariFiltro(String filtro, int storia);
 }

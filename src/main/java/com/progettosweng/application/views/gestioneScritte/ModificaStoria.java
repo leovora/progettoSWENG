@@ -19,100 +19,77 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.component.dialog.Dialog;
 
 public class ModificaStoria extends FormLayout {
-    Binder<Storia> binder = new BeanValidationBinder<>(Storia.class); // Binder per collegare i campi del form con l'oggetto Storia
+    Binder<Storia> binder = new BeanValidationBinder<>(Storia.class);
     TextField titolo = new TextField("Titolo");
     TextArea descrizione = new TextArea("Descrizione");
-    Dialog conferma = new Dialog(); // Dialog per la conferma di eliminazione
+    Dialog conferma = new Dialog();
 
     Button salva = new Button("Salva");
     Button elimina = new Button("Elimina");
-    Button indietro = new Button("Indietro");
+    Button mostraScenari = new Button("Mostra scenari");
     private Storia storia;
 
     public ModificaStoria() {
-
-        // Collegamento dei campi del form con l'oggetto Storia tramite il Binder
         binder.bindInstanceFields(this);
-        // Configurazione del Dialog per la conferma di eliminazione
         configureDialog();
-        // Configurazione del textfield per il numero massimo di caratteri
         configureTitolo();
-        // Configurazione della textarea per il numero massimo di caratteri
         configureDescrizione();
 
-
         add(
-            titolo,
-            descrizione,
-            createButtonLayout()
+                titolo,
+                descrizione,
+                createButtonLayout()
         );
-
     }
 
-    //Mostra il numero di caratteri scritti e quelli disponibili per il titolo
     private void configureTitolo() {
         titolo.setMaxLength(50);
         titolo.setValueChangeMode(ValueChangeMode.EAGER);
         titolo.addValueChangeListener(e -> {
-            e.getSource()
-                    .setHelperText(e.getValue().length() + "/" + 50);
+            e.getSource().setHelperText(e.getValue().length() + "/" + 50);
         });
     }
 
-    //Mostra il numero di caratteri scritti e quelli disponibili per la descrizione
     private void configureDescrizione() {
         descrizione.setMaxLength(500);
         descrizione.setValueChangeMode(ValueChangeMode.EAGER);
         descrizione.addValueChangeListener(e -> {
-            e.getSource()
-                    .setHelperText(e.getValue().length() + "/" + 500);
+            e.getSource().setHelperText(e.getValue().length() + "/" + 500);
         });
     }
 
-    // Metodo per impostare la storia da modificare
     public void setStoria(Storia storia){
         this.storia = storia;
-        binder.readBean(storia); // legge i valori degli attributi del bean specificato e li imposta nei campi del form associati
+        binder.readBean(storia);
     }
 
-    // Metodo per creare il layout dei pulsanti del form
     private Component createButtonLayout() {
         salva.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         elimina.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        indietro.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         salva.addClickListener(event -> validateAndSave());
         elimina.addClickListener(event -> conferma.open());
-        indietro.addClickListener(event -> fireEvent(new IndietroEvent(this)));
+        mostraScenari.addClickListener(event -> fireEvent(new MostraScenariEvent(this, storia)));
 
         salva.addClickShortcut(Key.ENTER);
-        indietro.addClickShortcut(Key.ESCAPE);
+        mostraScenari.addClickShortcut(Key.ESCAPE);
 
-        return new HorizontalLayout(salva, elimina, indietro);
+        return new HorizontalLayout(salva, elimina, mostraScenari);
     }
 
-    // Metodo per validare e salvare le modifiche
     private void validateAndSave() {
-        try{
-            binder.writeBean(storia); //scrive i valori dei campi del form associati al binder nell'oggetto bean specificato
+        try {
+            binder.writeBean(storia);
             fireEvent(new SalvaEvent(this, storia));
-        } catch(ValidationException e){
+        } catch (ValidationException e) {
             e.printStackTrace();
         }
     }
 
-    /*
-    Si potrebbero usare delle invocazioni di metodi normali,
-    ma l'utilizzo degli eventi aiuta a mantenere un basso
-    decoupling e separare le responsabilità
-     */
-
-    // Classe astratta che rappresenta un evento generico associato alla modifica di una storia
-    public static abstract class ModificaStoriaEvent extends ComponentEvent<ModificaStoria>{
+    public static abstract class ModificaStoriaEvent extends ComponentEvent<ModificaStoria> {
         private Storia storia;
 
-        protected ModificaStoriaEvent(ModificaStoria source, Storia storia){
-            // Chiama il costruttore della superclasse per inizializzare l'evento
+        protected ModificaStoriaEvent(ModificaStoria source, Storia storia) {
             super(source, false);
             this.storia = storia;
         }
@@ -122,33 +99,28 @@ public class ModificaStoria extends FormLayout {
         }
     }
 
-    // Sottoclasse di ModificaStoriaEvent che rappresenta un evento di salvataggio
     public static class SalvaEvent extends ModificaStoriaEvent {
-        SalvaEvent(ModificaStoria source, Storia storia){
+        SalvaEvent(ModificaStoria source, Storia storia) {
             super(source, storia);
         }
     }
 
-    // Sottoclasse di ModificaStoriaEvent che rappresenta un evento di eliminazione
     public static class EliminaEvent extends ModificaStoriaEvent {
-        EliminaEvent(ModificaStoria source, Storia storia){
+        EliminaEvent(ModificaStoria source, Storia storia) {
             super(source, storia);
         }
     }
 
-    // Sottoclasse di ModificaStoriaEvent che rappresenta un evento di ritorno alla pagina precedente
-    public static class IndietroEvent extends ModificaStoriaEvent {
-        IndietroEvent(ModificaStoria source){
-            super(source, null);
+    public static class MostraScenariEvent extends ModificaStoriaEvent {
+        MostraScenariEvent(ModificaStoria source, Storia storia) {
+            super(source, storia);
         }
     }
 
-    // Metodo per aggiungere un listener per gestire gli eventi generici associati alla modifica di una storia
-    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener){
-        return getEventBus().addListener(eventType, listener); // Delega l'aggiunta del listener all'eventBus della classe
+    public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType, ComponentEventListener<T> listener) {
+        return getEventBus().addListener(eventType, listener);
     }
 
-    // Configurazione del Dialog per la conferma di eliminazione
     private void configureDialog() {
         conferma.setHeaderTitle("Eliminare storia?");
         conferma.add("Sei sicuro di voler eliminare definitivamente questa storia e tutti i suoi scenari?");
@@ -163,10 +135,8 @@ public class ModificaStoria extends FormLayout {
         conferma.getFooter().add(annulla);
     }
 
-    // Metodo per gestire l'evento di conferma di eliminazione dal Dialog
     private void dialogEvent() {
         fireEvent(new EliminaEvent(this, storia));
         conferma.close();
     }
 }
-
