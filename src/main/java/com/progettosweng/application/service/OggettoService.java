@@ -20,4 +20,8 @@ public class OggettoService {
     public List<Oggetto> getOggettiStoria(Storia storia) {return oggettoRepository.findByStoria(storia);}
 
     public List<Oggetto> getOggettiScenario(Scenario scenario) { return oggettoRepository.findByScenario(scenario);}
+
+    public void deleteOggettoByStoria(Storia storia) {
+        oggettoRepository.deleteByStoria(storia);
+    }
 }

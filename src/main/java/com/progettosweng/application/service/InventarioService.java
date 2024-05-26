@@ -13,7 +13,9 @@ public class InventarioService {
 
     public Inventario saveOggettoInventario(Inventario inventario) { return inventarioRepository.save(inventario);}
 
-    public void deleteInventarioStoria(Storia storia) { inventarioRepository.deleteByStoria(storia);}
+    public void deleteInventarioByStoria(Storia storia) { inventarioRepository.deleteByStoria(storia);}
+
+    public void deleteInventarioUser(AbstractUser user, Storia storia) { inventarioRepository.deleteByUser(user, storia);}
 
     public Boolean checkOggettoInventario(AbstractUser user, Oggetto oggetto) { return inventarioRepository.checkOggetto(user, oggetto);}
 }

@@ -17,4 +17,9 @@ public interface InventarioRepository extends JpaRepository<Inventario, Integer>
 
     @Query("SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END FROM Inventario i WHERE i.user = :user AND i.oggetto = :oggetto")
     Boolean checkOggetto(AbstractUser user, Oggetto oggetto);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Inventario  i WHERE i.user = :user AND i.oggetto.storia = :storia")
+    void deleteByUser(AbstractUser user, Storia storia);
 }

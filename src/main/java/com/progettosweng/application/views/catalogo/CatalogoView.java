@@ -26,8 +26,8 @@ public class CatalogoView extends VerticalLayout {
     TextField filterText = new TextField();
     private StoriaService storiaService;
 
-    private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    private final String username = authentication.getName();
+    //private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    //private final String username = authentication.getName();
 
     public CatalogoView(StoriaService storiaService) {
 

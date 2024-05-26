@@ -46,8 +46,8 @@ public class ImpostazioniScenario extends VerticalLayout {
     private SceltaSempliceService sceltaSempliceService;
     @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
-    @Autowired
-    private SceltaOggettoService sceltaOggettoService;
+//    @Autowired
+//    private SceltaOggettoService sceltaOggettoService;
     @Autowired
     private OggettoService oggettoService;
 
@@ -155,8 +155,13 @@ public class ImpostazioniScenario extends VerticalLayout {
             prossimo.setText("Fine");
             prossimo.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
             registration = prossimo.addClickListener(e -> {
-                VaadinSession.getCurrent().setAttribute("idStoria", null);
-                getUI().ifPresent(ui -> ui.navigate("gestioneScritte"));
+                if(collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex)).size() < 2 && !scenarioFinale.getValue()){
+                    Notification.show("Aggiungi almeno 2 collegamenti").addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+                else{
+                    VaadinSession.getCurrent().setAttribute("idStoria", null);
+                    getUI().ifPresent(ui -> ui.navigate("gestioneScritte"));
+                }
             });
         }
         else if(registration != null){
@@ -301,14 +306,14 @@ public class ImpostazioniScenario extends VerticalLayout {
             Scenario collegamento = comboBoxScenario.getValue();
             Scenario currentScenario = scenari.get(currentIndex);
             Oggetto oggetto = comboBoxOggetto.getValue();
-            SceltaOggetto scelta = new SceltaOggetto(currentScenario,
+            SceltaSemplice scelta = new SceltaSemplice(currentScenario,
                     collegamento,
                     nomeScelta.getValue(),
                     oggetto
             );
 
-            sceltaOggettoService.saveSceltaOggetto(scelta);
-            collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
+            sceltaSempliceService.saveSceltaSemplice(scelta);
+            //collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
             dialogCollegamento.close();
             //configScelteTable();
             //updateScelteTable();

@@ -56,8 +56,10 @@ public class GiocaStoria extends VerticalLayout {
     @Autowired
     private AbstractUserService abstractUserService;
 
+    private Storia storia;
     private Scenario currentScenario;
     private Button esci;
+    private Button fine;
     private AbstractUser user;
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -98,7 +100,7 @@ public class GiocaStoria extends VerticalLayout {
     private void configureStoria() {
         Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
         if (idStoria != null) {
-            Storia storia = storiaService.getStoria(idStoria);
+            storia = storiaService.getStoria(idStoria);
             this.currentScenario = scenarioService.getPrimoScenario(storia);
             displayScenario(currentScenario);
         } else {
@@ -141,9 +143,26 @@ public class GiocaStoria extends VerticalLayout {
         container.getStyle().setPaddingRight("47px");
         container.add(esciLayout, verticalLayout, horizontalLayout);
 
-        add(container);
+        add(container, casoScenarioFinale(scenario));
 
         raccogliOggetti(scenario);
+    }
+
+    private Button casoScenarioFinale(Scenario scenario) {
+        fine = new Button("Fine", e -> {
+            inventarioService.deleteInventarioUser(user, storia);
+            getUI().ifPresent(ui -> ui.navigate("catalogo"));
+            if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+                abstractUserService.deleteUser(user);
+            }
+        });
+        fine.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        if(collegamentoService.getCollegamentoByScenario(scenario).isEmpty()){
+            esci.setEnabled(false);
+            return fine;
+        }
+        fine.setVisible(false);
+        return fine;
     }
 
     private void raccogliOggetti(Scenario scenario) {
@@ -165,7 +184,7 @@ public class GiocaStoria extends VerticalLayout {
                 displayScenario(destinazione);
             } else {
                 System.out.println("OGGETTO RICHIESTO NON POSSEDUTO: " + collegamento.getOggettoRichiesto());
-                Notification.show("Non hai l'oggetto richiesto: " + collegamento.getOggettoRichiesto().getNomeOggetto());
+                Notification.show("Non hai l'oggetto richiesto: " + collegamento.getOggettoRichiesto().getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
             }
         }
         else{
@@ -196,6 +215,8 @@ public class GiocaStoria extends VerticalLayout {
 
     private void esciEvent() {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            inventarioService.deleteInventarioUser(user, storia);
+            abstractUserService.deleteUser(user);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
         }
         else{

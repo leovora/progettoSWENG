@@ -15,4 +15,5 @@ public interface OggettoRepository extends JpaRepository<Oggetto, Integer> {
 
     List<Oggetto> findByScenario(Scenario scenario);
 
+    void deleteByStoria(Storia storia);
 }

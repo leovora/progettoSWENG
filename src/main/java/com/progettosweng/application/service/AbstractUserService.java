@@ -12,4 +12,6 @@ public class AbstractUserService {
     private AbstractUserRepository abstractUserRepository;
 
     public AbstractUser saveUser(AbstractUser user){return abstractUserRepository.save(user);}
+
+    public void deleteUser(AbstractUser user) {abstractUserRepository.delete(user);}
 }

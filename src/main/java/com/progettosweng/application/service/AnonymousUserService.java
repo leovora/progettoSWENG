@@ -12,4 +12,6 @@ public class AnonymousUserService {
     private AnonymousUserRepository anonymousUserRepository;
 
     public AnonymousUser saveUser(AnonymousUser anonymousUser){ return anonymousUserRepository.save(anonymousUser);}
+
+    public void deleteAnonymousUserById(int id) {anonymousUserRepository.deleteById(id);}
 }

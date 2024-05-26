@@ -39,6 +39,13 @@ public abstract class Collegamento {
         this.nomeScelta = nomeScelta;
     }
 
+    public Collegamento(Scenario scenario1, Scenario scenario2, String nomeScelta, Oggetto oggettoRichiesto) {
+        this.scenario1 = scenario1;
+        this.scenario2 = scenario2;
+        this.nomeScelta = nomeScelta;
+        this.oggettoRichiesto = oggettoRichiesto;
+    }
+
     public abstract Scenario eseguiScelta();
     //public abstract Scenario eseguiScelta(AbstractUser user, Oggetto oggetto, InventarioService inventarioService);
 
