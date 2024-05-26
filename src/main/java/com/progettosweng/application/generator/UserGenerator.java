@@ -14,7 +14,7 @@ public class UserGenerator implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        generateUsers();
+        //generateUsers();
     }
 
     private void generateUsers() {

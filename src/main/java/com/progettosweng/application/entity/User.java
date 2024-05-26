@@ -1,9 +1,6 @@
 package com.progettosweng.application.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +12,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "USER")
-public class User{
+@Table(name = "USER", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "USERNAME")})
+public class User extends AbstractUser{
 
-    @Id
     @Column(name = "USERNAME")
     private String username;
 

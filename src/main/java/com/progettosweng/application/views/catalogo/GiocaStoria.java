@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -42,16 +44,48 @@ public class GiocaStoria extends VerticalLayout {
     @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
 
+    @Autowired
+    private  OggettoService oggettoService;
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AbstractUserService abstractUserService;
+
     private Scenario currentScenario;
     private Button esci;
+    private AbstractUser user;
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    public GiocaStoria(StoriaService storiaService, ScenarioService scenarioService, CollegamentoService collegamentoService, SceltaIndovinelloService sceltaIndovinelloService) {
+    public GiocaStoria(StoriaService storiaService,
+                       ScenarioService scenarioService,
+                       CollegamentoService collegamentoService,
+                       SceltaIndovinelloService sceltaIndovinelloService,
+                       OggettoService oggettoService,
+                       InventarioService inventarioService,
+                       UserService userService,
+                       AbstractUserService abstractUserService) {
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
         this.collegamentoService = collegamentoService;
         this.sceltaIndovinelloService = sceltaIndovinelloService;
+        this.oggettoService = oggettoService;
+        this.inventarioService = inventarioService;
+        this.userService = userService;
+        this.abstractUserService = abstractUserService;
 
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            user = new AnonymousUser();
+            abstractUserService.saveUser(user);
+
+        }
+        else{
+            user = userService.getUser(authentication.getName());
+        }
         configureStoria();
 
         setSizeFull();
@@ -108,12 +142,31 @@ public class GiocaStoria extends VerticalLayout {
         container.add(esciLayout, verticalLayout, horizontalLayout);
 
         add(container);
+
+        raccogliOggetti(scenario);
+    }
+
+    private void raccogliOggetti(Scenario scenario) {
+        List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
+        for(Oggetto oggetto : oggetti){
+            inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
+            Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        }
     }
 
     private void scelta(Collegamento collegamento) {
         Scenario destinazione = collegamentoService.eseguiScelta(collegamento);
-        if(destinazione != null) {
-            displayScenario(destinazione);
+        if(destinazione != null){
+            if (collegamento.getOggettoRichiesto() == null) {
+                System.out.println("NESSUN OGGETTO RICHIESTO" + collegamento.getIdCollegamento());
+                displayScenario(destinazione);
+            } else if (inventarioService.checkOggettoInventario(user, collegamento.getOggettoRichiesto())) {
+                System.out.println("OGGETTO RICHIESTO POSSEDUTO: " + collegamento.getOggettoRichiesto());
+                displayScenario(destinazione);
+            } else {
+                System.out.println("OGGETTO RICHIESTO NON POSSEDUTO: " + collegamento.getOggettoRichiesto());
+                Notification.show("Non hai l'oggetto richiesto: " + collegamento.getOggettoRichiesto().getNomeOggetto());
+            }
         }
         else{
            configDialogIndovinello(collegamento);

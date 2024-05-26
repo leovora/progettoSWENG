@@ -22,7 +22,7 @@ public class UserService {
 
     //ritorna utente cercando username
     public User getUser(String username){
-        return repository.findById(username).orElse(null);
+        return repository.findByUsername(username);
     }
 
     //true se esiste utente con username dato in input

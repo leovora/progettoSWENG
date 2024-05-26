@@ -308,6 +308,7 @@ public class ImpostazioniScenario extends VerticalLayout {
             );
 
             sceltaOggettoService.saveSceltaOggetto(scelta);
+            collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
             dialogCollegamento.close();
             //configScelteTable();
             //updateScelteTable();

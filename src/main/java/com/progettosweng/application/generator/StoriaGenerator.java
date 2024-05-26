@@ -30,6 +30,8 @@ public class StoriaGenerator  implements CommandLineRunner {
     @Autowired
     private OggettoService oggettoService;
 
+    @Autowired CollegamentoService collegamentoService;
+
     @Override
     public void run(String... args) throws Exception {
         generateStorie();
@@ -115,6 +117,7 @@ public class StoriaGenerator  implements CommandLineRunner {
             sceltaSempliceService.saveSceltaSemplice(sceltaBotolaDestra);
             sceltaIndovinelloService.saveSceltaIndovinello(sceltaChiaveRaccolta);
             sceltaOggettoService.saveSceltaOggetto(sceltaBotolaSinistra);
+            collegamentoService.setOggettoRichiesto(sceltaBotolaSinistra.getIdCollegamento(), chiave);
 
         }
     }
