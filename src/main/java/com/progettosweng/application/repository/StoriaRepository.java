@@ -17,7 +17,7 @@ public interface StoriaRepository extends JpaRepository<Storia, Integer> {
     //query che filtra per titolo o per creatore di una storia
     @Query("SELECT s FROM Storia s " +
             "WHERE LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%')) " +
-            "OR LOWER(s.creatore) LIKE LOWER(CONCAT('%', :filtro, '%'))")
+            "OR LOWER(s.creatore.nome) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Storia> search(@Param("filtro") String filtro);
 
     //query che filtra per titolo tra le storie di un determinato utente

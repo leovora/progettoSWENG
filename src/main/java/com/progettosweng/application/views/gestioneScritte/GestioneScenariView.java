@@ -1,11 +1,14 @@
 package com.progettosweng.application.views.gestioneScritte;
 
+import com.progettosweng.application.entity.Scenario;
 import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.service.ScenarioService;
 import com.progettosweng.application.service.StoriaService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -17,22 +20,27 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-@PageTitle("Storia | Gestione")
-@Route(value = "gestioneScritte", layout = MainLayout.class)
+@PageTitle("Scenari | Gestione")
+@Route(value = "scenari-view", layout = MainLayout.class)
 @PermitAll
-public class GestioneScritteView extends VerticalLayout {
+public class GestioneScenariView extends VerticalLayout {
 
-    Grid<Storia> grid = new Grid<>(Storia.class);
-    ModificaStoria modificaStoria;
+    Grid<Scenario> grid = new Grid<>(Scenario.class);
+    ModificaScenario modificaScenario;
     TextField filterText = new TextField();
     private StoriaService storiaService;
+    private ScenarioService scenarioService;
+    private final Integer idStoria;
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     private final String username = authentication.getName();
 
-    public GestioneScritteView(StoriaService storiaService) {
+    public GestioneScenariView(StoriaService storiaService, ScenarioService scenarioService) {
 
         this.storiaService = storiaService;
+        this.scenarioService = scenarioService;
+
+        idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
 
         addClassName("list-view");
         setSizeFull();
@@ -41,8 +49,8 @@ public class GestioneScritteView extends VerticalLayout {
         configureModifica();
 
         add(
-          getToolbar(),
-          getContent()
+                getToolbar(),
+                getContent()
         );
 
         updateList();
@@ -51,16 +59,16 @@ public class GestioneScritteView extends VerticalLayout {
 
     //metodo che nasconde la finestra di modifica sulla destra
     private void closeEditor() {
-        modificaStoria.setStoria(null);
-        modificaStoria.setVisible(false);
+        modificaScenario.setScenario(null);
+        modificaScenario.setVisible(false);
         removeClassName("editing");
     }
 
     //metodo che crea il contenuto della pagina (griglia, form di modifica)
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid, modificaStoria);
+        HorizontalLayout content = new HorizontalLayout(grid, modificaScenario);
         content.setFlexGrow(2, grid);
-        content.setFlexGrow(1, modificaStoria);
+        content.setFlexGrow(1, modificaScenario);
         content.addClassNames("content");
         content.setSizeFull();
 
@@ -69,30 +77,15 @@ public class GestioneScritteView extends VerticalLayout {
 
     //metodo che crea nuovo form di modifica
     private void configureModifica() {
-        modificaStoria = new ModificaStoria();
-        modificaStoria.setWidth("25em");
-        
-        modificaStoria.addListener(ModificaStoria.SalvaEvent.class, this::salvaStoria);
-        modificaStoria.addListener(ModificaStoria.EliminaEvent.class, this::eliminaStoria);
-        modificaStoria.addListener(ModificaStoria.MostraScenariEvent.class, this::mostraScenari);
+        modificaScenario = new ModificaScenario();
+        modificaScenario.setWidth("25em");
+
+        modificaScenario.addListener(ModificaScenario.SalvaEvent.class, this::salvaScenario);
+        modificaScenario.addListener(ModificaScenario.IndietroEvent.class, e -> closeEditor());
     }
 
-    private void mostraScenari(ModificaStoria.MostraScenariEvent event) {
-        Storia storia = event.getStoria();
-        if (storia != null) {
-            VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
-            getUI().ifPresent(ui -> ui.navigate("scenari-view"));
-        }
-    }
-
-    private void eliminaStoria(ModificaStoria.EliminaEvent event) {
-        storiaService.deleteStoria(event.getStoria());
-        updateList();
-        closeEditor();
-    }
-
-    private void salvaStoria(ModificaStoria.SalvaEvent event) {
-        storiaService.saveStoria(event.getStoria());
+    private void salvaScenario(ModificaScenario.SalvaEvent event) {
+        scenarioService.saveScenario(event.getScenario());
         updateList();
         closeEditor();
     }
@@ -104,39 +97,38 @@ public class GestioneScritteView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY); //modo efficiente per frequenza delle chiamate al db
         filterText.addValueChangeListener(e -> updateList()); //aggiorna la lista ogni volta che si scrive un nuovo filtro
 
-        Button aggiungi = new Button("Aggiungi storia", e -> getUI().ifPresent(ui -> ui.navigate("scrittura")));
+        Button indietro = new Button("Torna alle storie", e -> getUI().ifPresent(ui -> ui.navigate("gestioneScritte")));
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, aggiungi);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, indietro);
 
         return toolbar;
     }
 
     //metodo che crea la tabella
     private void configureGrid() {
-        grid.addClassName("storie-grid");
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setSizeFull();
         grid.setColumns("titolo");
-        grid.addColumn(storia -> truncateString(storia.getDescrizione())).setHeader("Descrizione");
-        grid.addColumn("numeroStato").setHeader("Numero scenari");
+        grid.addColumn(scenario -> truncateString(scenario.getDescrizione())).setHeader("Descrizione");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
 
-        grid.asSingleSelect().addValueChangeListener(e -> editStoria(e.getValue()));
+        grid.asSingleSelect().addValueChangeListener(e -> editScenario(e.getValue()));
     }
 
     // metodo che mostra/nasconde il form di modifica della storia
-    private void editStoria(Storia storia) {
-        if(storia == null){
+    private void editScenario(Scenario scenario) {
+        if(scenario == null){
             closeEditor();
         } else{
-            modificaStoria.setStoria(storia);
-            modificaStoria.setVisible(true);
-            modificaStoria.addClassName("editing");
+            modificaScenario.setScenario(scenario);
+            modificaScenario.setVisible(true);
+            modificaScenario.addClassName("editing");
         }
     }
 
     //metodo che popola la tabella
     private void updateList() {
-        grid.setItems(storiaService.findAllStorieScritte(username, filterText.getValue()));
+        grid.setItems(scenarioService.getScenariFiltro(filterText.getValue(), idStoria));
     }
 
     // Metodo per limitare la lunghezza della descrizione
@@ -148,3 +140,4 @@ public class GestioneScritteView extends VerticalLayout {
         }
     }
 }
+

@@ -30,7 +30,7 @@ public class Scenario {
     @Column(name = "PrimoScenario")
     private Boolean primoScenario;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "storia_id")
     private Storia storia;
 

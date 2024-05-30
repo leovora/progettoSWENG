@@ -9,9 +9,8 @@ import com.progettosweng.application.service.UserService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
@@ -19,6 +18,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -30,6 +30,9 @@ import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.vaadin.flow.component.grid.Grid;
+
+import java.util.List;
 
 @PermitAll
 @PageTitle("Storia | Scrittura")
@@ -52,11 +55,14 @@ public class ScritturaView extends VerticalLayout {
     private Button creaScenari;
     private Button salvaStoria;
     private String username;
-
-
+    private Storia storia;
+    private Grid<Scenario> tabellaScenari = new Grid<>(Scenario.class);
+    private HorizontalLayout tableLayout;
 
     private int scenarioCount = 0;
-    public ScritturaView() {
+
+    public ScritturaView(ScenarioService scenarioService) {
+        this.scenarioService = scenarioService;
         // Set up the vertical layout
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         setSizeFull();
@@ -91,15 +97,9 @@ public class ScritturaView extends VerticalLayout {
                     .setHelperText(e.getValue().length() + "/" + 500);
         });
 
-
         scenarioCountLabel = new Span("Numero di scenari presenti nella storia: " + scenarioCount);
         titolo.setWidth("50%");
         descrizione.setWidth("50%");
-
-//        VerticalLayout tablesLayout = new VerticalLayout(); // Layout che contiene le tabelle
-//        tablesLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER); // Centra i componenti all'interno del layout
-//        tablesLayout.setWidth("100%");
-//        tablesLayout.getStyle().set("overflow-y", "auto"); // Aggiungi uno scroll verticale
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         username = authentication.getName();
@@ -126,20 +126,57 @@ public class ScritturaView extends VerticalLayout {
         avanti.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         avanti.setEnabled(false);
 
+        configureGridScenari();
+
         add(titoloPagina, container, creaScenari, scenarioCountLabel, avanti);
     }
 
+    private void configureGridScenari() {
+
+        tableLayout = new HorizontalLayout();
+        tableLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        // Rimuovi tutte le colonne esistenti
+        tabellaScenari.removeAllColumns();
+
+        // Aggiungi le colonne con espressioni lambda corrette
+        tabellaScenari.addColumn(Scenario::getTitolo).setHeader("Titolo scenario");
+        tabellaScenari.addColumn(Scenario::getDescrizione).setHeader("Descrizione");
+
+        // Imposta l'altezza massima della tabella
+        tabellaScenari.setMaxHeight("300px");
+        tabellaScenari.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
+        tabellaScenari.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        tabellaScenari.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
+        tabellaScenari.setWidth("1500px");
+        // Imposta la modalità di selezione
+        tabellaScenari.setSelectionMode(Grid.SelectionMode.NONE);
+        tableLayout.add(tabellaScenari);
+
+        // Carica i collegamenti e aggiorna la tabella
+        updateTable();
+    }
+
+    private void updateTable() {
+        // Carica i collegamenti per lo scenario corrente
+        List<Scenario> scenari = scenarioService.getScenariByStoria(storia);
+        // Aggiorna la tabella con i nuovi dati
+        tabellaScenari.setItems(scenari);
+
+        if(scenarioCount > 0){
+            add(tableLayout);
+        }
+    }
+
     private void prosegui() {
-        if(scenarioCount >= 3){
+        if (scenarioCount >= 3) {
             avanti.setEnabled(true);
         }
     }
 
-    public void salva(){
-        if(titolo.getValue().isEmpty() || descrizione.getValue().isEmpty()){
+    public void salva() {
+        if (titolo.getValue().isEmpty() || descrizione.getValue().isEmpty()) {
             Notification.show("Compila tutti i campi").addThemeVariants(NotificationVariant.LUMO_ERROR);
-        }
-        else{
+        } else {
             salvaStoria(username,
                     titolo.getValue(),
                     descrizione.getValue());
@@ -150,12 +187,12 @@ public class ScritturaView extends VerticalLayout {
 
     private void salvaStoria(String username, String titolo, String descrizione) {
         User user = userService.getUser(username);
-        Storia storia = new Storia(titolo, descrizione, scenarioCount, user);
-        storiaService.saveStoria(storia);
+        storia = new Storia(titolo, descrizione, scenarioCount, user);
+        storiaService.saveStoria(storia); // Salva e ottieni la storia gestita
         Notification.show("Storia aggiunta");
 
         // Salva l'ID della storia nella sessione
-        VaadinSession.getCurrent().setAttribute("idStoria", storiaService.getId(storia));
+        VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
     }
 
     private void openScenarioDialog() {
@@ -185,9 +222,10 @@ public class ScritturaView extends VerticalLayout {
         Button salvaScenarioButton = new Button("Salva", e -> {
             Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
             if (idStoria != null && !titoloScenario.isEmpty() && !descrizioneScenario.isEmpty()) {
-                salvaScenario(titoloScenario.getValue(), descrizioneScenario.getValue(), idStoria);
+                salvaScenario(titoloScenario.getValue(), descrizioneScenario.getValue());
                 updateCount();
                 dialog.close();
+                updateTable();
             } else {
                 Notification.show("Inserisci tutti i campi").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -200,16 +238,14 @@ public class ScritturaView extends VerticalLayout {
         dialog.open();
     }
 
-    private void salvaScenario(String titolo, String descrizione, int idStoria) {
-        // Trova la storia corrispondente all'ID
-        Storia storia = storiaService.findStoriaById(idStoria);
+    private void salvaScenario(String titolo, String descrizione) {
         scenarioCount++;
 
         Scenario scenario = new Scenario(titolo, descrizione, storia);
         scenarioService.saveScenario(scenario);
         storiaService.setNScenari(storia, scenarioCount);
 
-        if(scenarioCount == 1){
+        if (scenarioCount == 1) {
             scenarioService.setPrimoScenario(scenario);
         }
 
@@ -218,8 +254,7 @@ public class ScritturaView extends VerticalLayout {
         Notification.show("Scenario aggiunto");
     }
 
-    public void updateCount(){
-        scenarioCountLabel.remove();
+    public void updateCount() {
         scenarioCountLabel.setText("Numero di scenari presenti nella storia: " + scenarioCount);
     }
 }
