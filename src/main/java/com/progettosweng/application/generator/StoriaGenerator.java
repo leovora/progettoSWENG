@@ -18,8 +18,8 @@ public class StoriaGenerator  implements CommandLineRunner {
     @Autowired
     private ScenarioService scenarioService;
 
-    @Autowired
-    private SceltaOggettoService sceltaOggettoService;
+//    @Autowired
+//    private SceltaOggettoService sceltaOggettoService;
 
     @Autowired
     private SceltaSempliceService sceltaSempliceService;
@@ -30,9 +30,11 @@ public class StoriaGenerator  implements CommandLineRunner {
     @Autowired
     private OggettoService oggettoService;
 
+    @Autowired CollegamentoService collegamentoService;
+
     @Override
     public void run(String... args) throws Exception {
-        generateStorie();
+        //generateStorie();
     }
 
     private void generateStorie() {
@@ -105,7 +107,7 @@ public class StoriaGenerator  implements CommandLineRunner {
             SceltaSemplice sceltaSinistra = new SceltaSemplice(chiaveRaccolta, sinistra, "Sinistra");
             SceltaSemplice sceltaDestra = new SceltaSemplice(chiaveRaccolta, portaDestra, "Destra");
             SceltaSemplice sceltaBotolaDestra = new SceltaSemplice(portaDestra, botolaDestra, "Botola destra");
-            SceltaOggetto sceltaBotolaSinistra = new SceltaOggetto(portaDestra, botolaSinistra, "Botola sinistra", chiave);
+            SceltaSemplice sceltaBotolaSinistra = new SceltaSemplice(portaDestra, botolaSinistra, "Botola sinistra", chiave);
 
             sceltaSempliceService.saveSceltaSemplice(sceltaPortaSinistra);
             sceltaSempliceService.saveSceltaSemplice(sceltaPortaDestra);
@@ -114,7 +116,8 @@ public class StoriaGenerator  implements CommandLineRunner {
             sceltaSempliceService.saveSceltaSemplice(sceltaDestra);
             sceltaSempliceService.saveSceltaSemplice(sceltaBotolaDestra);
             sceltaIndovinelloService.saveSceltaIndovinello(sceltaChiaveRaccolta);
-            sceltaOggettoService.saveSceltaOggetto(sceltaBotolaSinistra);
+            sceltaSempliceService.saveSceltaSemplice(sceltaBotolaSinistra);
+            //collegamentoService.setOggettoRichiesto(sceltaBotolaSinistra.getIdCollegamento(), chiave);
 
         }
     }

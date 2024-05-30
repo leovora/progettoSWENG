@@ -1,10 +1,8 @@
 package com.progettosweng.application.service;
 
-import com.progettosweng.application.entity.Collegamento;
-import com.progettosweng.application.entity.Scenario;
+import com.progettosweng.application.entity.SceltaIndovinello;
 import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.entity.User;
-import com.progettosweng.application.repository.ScenarioRepository;
 import com.progettosweng.application.repository.StoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +25,17 @@ public class StoriaService {
     @Autowired
     private CollegamentoService collegamentoService;
 
+    @Autowired
+    private OggettoService oggettoService;
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private SceltaIndovinelloService sceltaIndovinelloService;
+
+    @Autowired SceltaSempliceService sceltaSempliceService;
+
 
     //salva storia
     public Storia saveStoria(Storia storia){
@@ -36,7 +45,11 @@ public class StoriaService {
     //elimina storia e tutti i suoi scenari
     @Transactional
     public void deleteStoria(Storia storia){
+        inventarioService.deleteInventarioByStoria(storia);
+        sceltaSempliceService.deleteSceltaSempliceByStoria(storia);
+        sceltaIndovinelloService.deleteSceltaIndovinelloByStoria(storia);
         collegamentoService.deleteCollegamentiByStoria(storia);
+        oggettoService.deleteOggettoByStoria(storia);
         scenarioService.deleteScenarioByIdStoria(storia);
         repository.delete(storia);
     }
@@ -82,7 +95,8 @@ public class StoriaService {
 
     //ritorna creatore di una storia
     public User getCreatore(int idStoria){
-        return repository.findById(idStoria).get().getCreatore();
+        Storia storia = getStoria(idStoria);
+        return storia.getCreatore();
     }
 
     //ritorna tutte le storie scritte da un utente

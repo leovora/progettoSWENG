@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -42,16 +44,50 @@ public class GiocaStoria extends VerticalLayout {
     @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
 
+    @Autowired
+    private  OggettoService oggettoService;
+
+    @Autowired
+    private InventarioService inventarioService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AbstractUserService abstractUserService;
+
+    private Storia storia;
     private Scenario currentScenario;
     private Button esci;
+    private Button fine;
+    private AbstractUser user;
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    public GiocaStoria(StoriaService storiaService, ScenarioService scenarioService, CollegamentoService collegamentoService, SceltaIndovinelloService sceltaIndovinelloService) {
+    public GiocaStoria(StoriaService storiaService,
+                       ScenarioService scenarioService,
+                       CollegamentoService collegamentoService,
+                       SceltaIndovinelloService sceltaIndovinelloService,
+                       OggettoService oggettoService,
+                       InventarioService inventarioService,
+                       UserService userService,
+                       AbstractUserService abstractUserService) {
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
         this.collegamentoService = collegamentoService;
         this.sceltaIndovinelloService = sceltaIndovinelloService;
+        this.oggettoService = oggettoService;
+        this.inventarioService = inventarioService;
+        this.userService = userService;
+        this.abstractUserService = abstractUserService;
 
+        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            user = new AnonymousUser();
+            abstractUserService.saveUser(user);
+
+        }
+        else{
+            user = userService.getUser(authentication.getName());
+        }
         configureStoria();
 
         setSizeFull();
@@ -64,7 +100,7 @@ public class GiocaStoria extends VerticalLayout {
     private void configureStoria() {
         Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
         if (idStoria != null) {
-            Storia storia = storiaService.getStoria(idStoria);
+            storia = storiaService.getStoria(idStoria);
             this.currentScenario = scenarioService.getPrimoScenario(storia);
             displayScenario(currentScenario);
         } else {
@@ -107,13 +143,49 @@ public class GiocaStoria extends VerticalLayout {
         container.getStyle().setPaddingRight("47px");
         container.add(esciLayout, verticalLayout, horizontalLayout);
 
-        add(container);
+        add(container, casoScenarioFinale(scenario));
+
+        raccogliOggetti(scenario);
+    }
+
+    private Button casoScenarioFinale(Scenario scenario) {
+        fine = new Button("Fine", e -> {
+            inventarioService.deleteInventarioUser(user, storia);
+            getUI().ifPresent(ui -> ui.navigate("catalogo"));
+            if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+                abstractUserService.deleteUser(user);
+            }
+        });
+        fine.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        if(collegamentoService.getCollegamentoByScenario(scenario).isEmpty()){
+            esci.setEnabled(false);
+            return fine;
+        }
+        fine.setVisible(false);
+        return fine;
+    }
+
+    private void raccogliOggetti(Scenario scenario) {
+        List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
+        for(Oggetto oggetto : oggetti){
+            inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
+            Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        }
     }
 
     private void scelta(Collegamento collegamento) {
         Scenario destinazione = collegamentoService.eseguiScelta(collegamento);
-        if(destinazione != null) {
-            displayScenario(destinazione);
+        if(destinazione != null){
+            if (collegamento.getOggettoRichiesto() == null) {
+                System.out.println("NESSUN OGGETTO RICHIESTO" + collegamento.getIdCollegamento());
+                displayScenario(destinazione);
+            } else if (inventarioService.checkOggettoInventario(user, collegamento.getOggettoRichiesto())) {
+                System.out.println("OGGETTO RICHIESTO POSSEDUTO: " + collegamento.getOggettoRichiesto());
+                displayScenario(destinazione);
+            } else {
+                System.out.println("OGGETTO RICHIESTO NON POSSEDUTO: " + collegamento.getOggettoRichiesto());
+                Notification.show("Non hai l'oggetto richiesto: " + collegamento.getOggettoRichiesto().getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            }
         }
         else{
            configDialogIndovinello(collegamento);
@@ -143,6 +215,8 @@ public class GiocaStoria extends VerticalLayout {
 
     private void esciEvent() {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+            inventarioService.deleteInventarioUser(user, storia);
+            abstractUserService.deleteUser(user);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
         }
         else{

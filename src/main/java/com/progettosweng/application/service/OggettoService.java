@@ -1,6 +1,7 @@
 package com.progettosweng.application.service;
 
 import com.progettosweng.application.entity.Oggetto;
+import com.progettosweng.application.entity.Scenario;
 import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.repository.OggettoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,4 +18,10 @@ public class OggettoService {
     public Oggetto saveOggetto(Oggetto oggetto){return oggettoRepository.save(oggetto);}
 
     public List<Oggetto> getOggettiStoria(Storia storia) {return oggettoRepository.findByStoria(storia);}
+
+    public List<Oggetto> getOggettiScenario(Scenario scenario) { return oggettoRepository.findByScenario(scenario);}
+
+    public void deleteOggettoByStoria(Storia storia) {
+        oggettoRepository.deleteByStoria(storia);
+    }
 }

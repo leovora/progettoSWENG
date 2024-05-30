@@ -1,8 +1,6 @@
 package com.progettosweng.application.service;
 
-import com.progettosweng.application.entity.Collegamento;
-import com.progettosweng.application.entity.Scenario;
-import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.entity.*;
 import com.progettosweng.application.repository.CollegamentoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,4 +34,14 @@ public class CollegamentoService {
     public List<Collegamento> getCollegamentoByScenario(Scenario scenario) { return collegamentoRepository.findByScenario1(scenario);}
 
     public Scenario eseguiScelta(Collegamento collegamento){ return collegamento.eseguiScelta(); }
+
+    public void setOggettoRichiesto(int idCollegamento, Oggetto oggetto) {
+        Collegamento collegamento = findCollegamentoById(idCollegamento);
+        collegamento.setOggettoRichiesto(oggetto);
+        collegamentoRepository.save(collegamento);
+    }
+
+//    public Scenario eseguiScelta(Collegamento collegamento, AbstractUser user, Oggetto oggetto, InventarioService inventarioService){
+//        return collegamento.eseguiScelta(user, oggetto, inventarioService);
+//    }
 }
