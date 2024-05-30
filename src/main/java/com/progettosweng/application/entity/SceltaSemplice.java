@@ -17,4 +17,9 @@ public class SceltaSemplice extends Collegamento{
     public SceltaSemplice(Scenario scenario1, Scenario scenario2, String nomeScelta){
         super(scenario1, scenario2, nomeScelta);
     }
+
+    @Override
+    public Scenario eseguiScelta(){
+        return this.getScenario2();
+    }
 }

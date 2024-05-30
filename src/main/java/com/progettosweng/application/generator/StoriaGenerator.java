@@ -76,14 +76,14 @@ public class StoriaGenerator  implements CommandLineRunner {
             Storia storiaGiocabile = new Storia("Storia giocabile", "Questa è la prima prova di una storia giocabile con scelte e collegamenti", 8, user2);
             storiaService.saveStoria(storiaGiocabile);
 
-            Scenario inizio = new Scenario(126,"Scenario iniziale", "Ti trovi in un castello, ci sono due porte. Decidi se andare a sinistra o destra.", storiaGiocabile);
-            Scenario portaSinistra = new Scenario(127,"Porta sinistra", "Trovi una cassa. Per aprirla devi risolvere un indovinello. Scegli se aprire o andare avanti", storiaGiocabile);
-            Scenario portaDestra = new Scenario(128,"Porta destra", "Ci sono due botole. Quella sinistra è chiusa a chiave.", storiaGiocabile);
-            Scenario chiaveRaccolta = new Scenario(129,"Chiave raccolta", "Hai risolto l'indovinello e raccolto la chiave. Vai a sinistra o destra.", storiaGiocabile);
-            Scenario chiaveNonRaccolta = new Scenario(130,"Finale 1", "Hai sbagliato l'indovinello. La cassa ti ha ingoiato per intero.", storiaGiocabile);
-            Scenario botolaDestra = new Scenario(131,"Finale 2", "Sotto la botola si nascondeva un drago che ti riduce in cenere.", storiaGiocabile);
-            Scenario botolaSinistra = new Scenario(132,"Finale 3", "Esci dal castello. Sei salvo.", storiaGiocabile);
-            Scenario sinistra = new Scenario(133,"Finale 4", "Inciampi e batti la testa. Sei morto.", storiaGiocabile);
+            Scenario inizio = new Scenario("Scenario iniziale", "Ti trovi in un castello, ci sono due porte. Decidi se andare a sinistra o destra.", storiaGiocabile);
+            Scenario portaSinistra = new Scenario("Porta sinistra", "Trovi una cassa. Per aprirla devi risolvere un indovinello. Scegli se aprire o andare avanti", storiaGiocabile);
+            Scenario portaDestra = new Scenario("Porta destra", "Ci sono due botole. Quella sinistra è chiusa a chiave.", storiaGiocabile);
+            Scenario chiaveRaccolta = new Scenario("Chiave raccolta", "Hai risolto l'indovinello e raccolto la chiave. Vai a sinistra o destra.", storiaGiocabile);
+            Scenario chiaveNonRaccolta = new Scenario("Finale 1", "Hai sbagliato l'indovinello. La cassa ti ha ingoiato per intero.", storiaGiocabile);
+            Scenario botolaDestra = new Scenario("Finale 2", "Sotto la botola si nascondeva un drago che ti riduce in cenere.", storiaGiocabile);
+            Scenario botolaSinistra = new Scenario("Finale 3", "Esci dal castello. Sei salvo.", storiaGiocabile);
+            Scenario sinistra = new Scenario("Finale 4", "Inciampi e batti la testa. Sei morto.", storiaGiocabile);
 
             scenarioService.saveScenario(inizio);
             scenarioService.setPrimoScenario(inizio);

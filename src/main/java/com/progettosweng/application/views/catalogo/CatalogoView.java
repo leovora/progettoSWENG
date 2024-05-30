@@ -11,6 +11,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,6 +72,16 @@ public class CatalogoView extends VerticalLayout {
         visualizzaStoria.setWidth("25em");
 
         visualizzaStoria.addListener(VisualizzaStoria.IndietroEvent.class, e -> closeEditor());
+        visualizzaStoria.addListener(VisualizzaStoria.GiocaEvent.class, e -> {
+            Storia storia = e.getStoria();
+            if (storia != null) {
+                // Imposta la variabile di sessione
+                VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
+
+                // Reindirizza alla pagina gioca-storia
+                getUI().ifPresent(ui -> ui.navigate("gioca-storia"));
+            }
+        });
     }
 
 
