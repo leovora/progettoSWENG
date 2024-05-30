@@ -50,7 +50,7 @@ public class ScenarioTest {
                 "Titolo storia",
                 "Descrizione",
                 10,
-                user
+                 user
         );
 
         scenario1 = new Scenario(

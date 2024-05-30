@@ -36,6 +36,7 @@ public class StoriaService {
     //elimina storia e tutti i suoi scenari
     @Transactional
     public void deleteStoria(Storia storia){
+        collegamentoService.deleteCollegamentiByStoria(storia);
         scenarioService.deleteScenarioByIdStoria(storia);
         repository.delete(storia);
     }
@@ -92,5 +93,14 @@ public class StoriaService {
     public Storia findStoriaById(int idStoria) {
         Optional<Storia> optionalStoria = repository.findById(idStoria);
         return optionalStoria.orElse(null);
+    }
+
+    public void setNScenari(Storia storia, int numeroStato) {
+        storia.setNumeroStato(numeroStato);
+        repository.save(storia);
+    }
+
+    public int getId(Storia storia) {
+        return storia.getIdStoria();
     }
 }

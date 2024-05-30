@@ -9,21 +9,22 @@ import com.progettosweng.application.service.UserService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.dom.Style;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.security.PermitAll;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class ScritturaView extends VerticalLayout {
 
     private Span scenarioCountLabel;
     private Button avanti;
+    private TextField titolo;
+    private TextArea descrizione;
+    private Button creaScenari;
+    private Button salvaStoria;
+    private String username;
 
 
 
@@ -65,19 +71,21 @@ public class ScritturaView extends VerticalLayout {
         verticalLayout.setAlignItems(Alignment.CENTER);
         verticalLayout.setWidth("450px");
 
-        TextField titolo = new TextField("Titolo");
+        titolo = new TextField("Titolo");
         titolo.setWidthFull();
         titolo.setMaxLength(50);
         titolo.setValueChangeMode(ValueChangeMode.EAGER);
+        titolo.setRequired(true);
         titolo.addValueChangeListener(e -> {
             e.getSource()
                     .setHelperText(e.getValue().length() + "/" + 50);
         });
 
-        TextArea descrizione = new TextArea("Descrizione");
+        descrizione = new TextArea("Descrizione");
         descrizione.setWidthFull();
         descrizione.setMaxLength(500);
         descrizione.setValueChangeMode(ValueChangeMode.EAGER);
+        descrizione.setRequired(true);
         descrizione.addValueChangeListener(e -> {
             e.getSource()
                     .setHelperText(e.getValue().length() + "/" + 500);
@@ -94,19 +102,17 @@ public class ScritturaView extends VerticalLayout {
 //        tablesLayout.getStyle().set("overflow-y", "auto"); // Aggiungi uno scroll verticale
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        username = authentication.getName();
 
-        Button creaScenari = new Button("Aggiungi scenario", e -> openScenarioDialog());
+        creaScenari = new Button("Aggiungi scenario", e -> openScenarioDialog());
+        creaScenari.setEnabled(false);
 
-        Button salva = new Button("Salva storia", e -> salvaStoria(username,
-                titolo.getValue(),
-                descrizione.getValue())
-        );
-        salva.setDisableOnClick(true);
-        salva.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        salva.getStyle().setMarginTop("30px");
+        salvaStoria = new Button("Salva storia", e -> salva());
+        salvaStoria.setEnabled(true);
+        salvaStoria.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        salvaStoria.getStyle().setMarginTop("30px");
 
-        verticalLayout.add(titolo, descrizione, salva);
+        verticalLayout.add(titolo, descrizione, salvaStoria);
 
         Div container = new Div();
         container.getStyle().setBackground("#154c79");
@@ -117,6 +123,7 @@ public class ScritturaView extends VerticalLayout {
         container.add(verticalLayout);
 
         avanti = new Button("Prosegui", e -> getUI().ifPresent(ui -> ui.navigate("scenari")));
+        avanti.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         avanti.setEnabled(false);
 
         add(titoloPagina, container, creaScenari, scenarioCountLabel, avanti);
@@ -128,6 +135,19 @@ public class ScritturaView extends VerticalLayout {
         }
     }
 
+    public void salva(){
+        if(titolo.getValue().isEmpty() || descrizione.getValue().isEmpty()){
+            Notification.show("Compila tutti i campi").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+        else{
+            salvaStoria(username,
+                    titolo.getValue(),
+                    descrizione.getValue());
+            creaScenari.setEnabled(true);
+            salvaStoria.setEnabled(false);
+        }
+    }
+
     private void salvaStoria(String username, String titolo, String descrizione) {
         User user = userService.getUser(username);
         Storia storia = new Storia(titolo, descrizione, scenarioCount, user);
@@ -135,11 +155,13 @@ public class ScritturaView extends VerticalLayout {
         Notification.show("Storia aggiunta");
 
         // Salva l'ID della storia nella sessione
-        VaadinSession.getCurrent().setAttribute("idStoria", storia.getId());
+        VaadinSession.getCurrent().setAttribute("idStoria", storiaService.getId(storia));
     }
 
     private void openScenarioDialog() {
         Dialog dialog = new Dialog();
+        dialog.addClassName("centered-dialog-overlay");
+        dialog.addClassName("centered-dialog");
         dialog.setWidth("400px");
 
         H2 titoloCreazione = new H2("Creazione scenario");
@@ -162,11 +184,12 @@ public class ScritturaView extends VerticalLayout {
 
         Button salvaScenarioButton = new Button("Salva", e -> {
             Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
-            if (idStoria != null) {
+            if (idStoria != null && !titoloScenario.isEmpty() && !descrizioneScenario.isEmpty()) {
                 salvaScenario(titoloScenario.getValue(), descrizioneScenario.getValue(), idStoria);
+                updateCount();
                 dialog.close();
             } else {
-                Notification.show("L'ID della storia non è stato impostato correttamente nella sessione");
+                Notification.show("Inserisci tutti i campi").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
@@ -182,15 +205,21 @@ public class ScritturaView extends VerticalLayout {
         Storia storia = storiaService.findStoriaById(idStoria);
         scenarioCount++;
 
-
         Scenario scenario = new Scenario(titolo, descrizione, storia);
         scenarioService.saveScenario(scenario);
+        storiaService.setNScenari(storia, scenarioCount);
 
-        storia.setNScenari(scenarioCount);
-        storiaService.saveStoria(storia);
+        if(scenarioCount == 1){
+            scenarioService.setPrimoScenario(scenario);
+        }
 
         prosegui();
 
         Notification.show("Scenario aggiunto");
+    }
+
+    public void updateCount(){
+        scenarioCountLabel.remove();
+        scenarioCountLabel.setText("Numero di scenari presenti nella storia: " + scenarioCount);
     }
 }

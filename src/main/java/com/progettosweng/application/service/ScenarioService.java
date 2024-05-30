@@ -3,6 +3,8 @@ package com.progettosweng.application.service;
 import com.progettosweng.application.entity.Scenario;
 import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.repository.ScenarioRepository;
+import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +39,18 @@ public class ScenarioService {
         Collection<Scenario> scenari = repository.findAll();
         return new ArrayList<>(scenari);
     }
+    @Transactional
     public List<Scenario> getScenariByStoria(Storia storia) {
         return repository.findByStoria(storia);
     }
+
     public List<Scenario> getAllScenariByLoggedInUser(String username) {
         return repository.findAllByUserUsername(username);
+    }
+
+    public void setPrimoScenario(Scenario scenario){
+        scenario.setPrimoScenario(true);
+        repository.save(scenario);
     }
 
 }
