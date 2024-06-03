@@ -1,7 +1,9 @@
 package com.progettosweng.application.views.catalogo;
 
 import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.service.StatoPartitaService;
 import com.progettosweng.application.service.StoriaService;
+import com.progettosweng.application.service.UserService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
@@ -25,13 +27,15 @@ public class CatalogoView extends VerticalLayout {
     VisualizzaStoria visualizzaStoria;
     TextField filterText = new TextField();
     private StoriaService storiaService;
+    private final StatoPartitaService statoPartitaService;
+    private final UserService userService;
 
-    //private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    //private final String username = authentication.getName();
 
-    public CatalogoView(StoriaService storiaService) {
+    public CatalogoView(StoriaService storiaService, StatoPartitaService statoPartitaService, UserService userService) {
 
         this.storiaService = storiaService;
+        this.statoPartitaService = statoPartitaService;
+        this.userService = userService;
 
         addClassName("list-view");
         setSizeFull();
@@ -68,7 +72,7 @@ public class CatalogoView extends VerticalLayout {
 
     //metodo che crea nuovo form di modifica
     private void configureVisualizza() {
-        visualizzaStoria = new VisualizzaStoria();
+        visualizzaStoria = new VisualizzaStoria(userService,statoPartitaService);
         visualizzaStoria.setWidth("25em");
 
         visualizzaStoria.addListener(VisualizzaStoria.IndietroEvent.class, e -> closeEditor());
@@ -136,5 +140,4 @@ public class CatalogoView extends VerticalLayout {
         }
     }
 }
-
 

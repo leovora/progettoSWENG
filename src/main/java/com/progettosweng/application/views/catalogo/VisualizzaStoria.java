@@ -1,6 +1,9 @@
 package com.progettosweng.application.views.catalogo;
 
 import com.progettosweng.application.entity.Storia;
+import com.progettosweng.application.entity.User;
+import com.progettosweng.application.service.StatoPartitaService;
+import com.progettosweng.application.service.UserService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -8,12 +11,15 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.component.textfield.TextArea;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 public class VisualizzaStoria extends FormLayout {
     Binder<Storia> binder = new BeanValidationBinder<>(Storia.class); // Binder per collegare i campi del form con l'oggetto Storia
@@ -23,10 +29,15 @@ public class VisualizzaStoria extends FormLayout {
     Button gioca = new Button("Gioca");
     Button mostraScenario = new Button("Mostra primo scenario");
     Button indietro = new Button("Indietro");
+    private final UserService userService;
+    private final StatoPartitaService statoPartitaService;
+
 
     private Storia storia;
 
-    public VisualizzaStoria() {
+    public VisualizzaStoria(UserService userService, StatoPartitaService statoPartitaService) {
+        this.userService = userService;
+        this.statoPartitaService = statoPartitaService;
 
         // Collegamento dei campi del form con l'oggetto Storia tramite il Binder
         binder.bindInstanceFields(this);
@@ -47,7 +58,30 @@ public class VisualizzaStoria extends FormLayout {
     public void setStoria(Storia storia){
         this.storia = storia;
         binder.readBean(storia); // legge i valori degli attributi del bean specificato e li imposta nei campi del form associati
+
+        // Recupera l'utente corrente solo se autenticato
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            User currentUser = userService.getUser(username);
+            // Verifica se l'utente corrente è stato trovato
+            if (currentUser != null) {
+                // Verifica se la storia è presente nella tabella stato_partita per l'utente corrente
+                boolean isStoriaSalvata = statoPartitaService.existsByUserAndStoria(currentUser, storia);
+
+                // Se la storia è stata salvata, mostra un messaggio
+                if(isStoriaSalvata) {
+                    gioca.setText("Prosegui");
+                } else {
+                    gioca.setText("Gioca");
+                }
+            }
+            else{
+                gioca.setText("Gioca");
+            }
+        }
     }
+
 
     // Metodo per creare il layout dei pulsanti del form
     private Component createButtonLayout() {

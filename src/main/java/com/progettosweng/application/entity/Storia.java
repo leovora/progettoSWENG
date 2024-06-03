@@ -40,4 +40,8 @@ public class Storia{
         this.numeroStato = numeroStato;
         this.creatore = creatore;
     }
+
+    public int getId() {
+        return idStoria;
+    }
 }
