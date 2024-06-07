@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,29 +33,15 @@ import java.util.List;
 @AnonymousAllowed
 public class GiocaStoria extends VerticalLayout {
 
-    @Autowired
-    private StoriaService storiaService;
-
-    @Autowired
-    private ScenarioService scenarioService;
-
-    @Autowired
-    private CollegamentoService collegamentoService;
-
-    @Autowired
-    private SceltaIndovinelloService sceltaIndovinelloService;
-
-    @Autowired
-    private  OggettoService oggettoService;
-
-    @Autowired
-    private InventarioService inventarioService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AbstractUserService abstractUserService;
+    private final StoriaService storiaService;
+    private final ScenarioService scenarioService;
+    private final CollegamentoService collegamentoService;
+    private final SceltaIndovinelloService sceltaIndovinelloService;
+    private final OggettoService oggettoService;
+    private final InventarioService inventarioService;
+    private final UserService userService;
+    private final AbstractUserService abstractUserService;
+    private final StatoPartitaService statoPartitaService;
 
     private Storia storia;
     private Scenario currentScenario;
@@ -63,6 +50,7 @@ public class GiocaStoria extends VerticalLayout {
     private AbstractUser user;
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+    @Autowired
     public GiocaStoria(StoriaService storiaService,
                        ScenarioService scenarioService,
                        CollegamentoService collegamentoService,
@@ -70,7 +58,8 @@ public class GiocaStoria extends VerticalLayout {
                        OggettoService oggettoService,
                        InventarioService inventarioService,
                        UserService userService,
-                       AbstractUserService abstractUserService) {
+                       AbstractUserService abstractUserService,
+                       StatoPartitaService statoPartitaService) {
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
         this.collegamentoService = collegamentoService;
@@ -79,6 +68,7 @@ public class GiocaStoria extends VerticalLayout {
         this.inventarioService = inventarioService;
         this.userService = userService;
         this.abstractUserService = abstractUserService;
+        this.statoPartitaService = statoPartitaService;
 
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             user = new AnonymousUser();
@@ -93,28 +83,50 @@ public class GiocaStoria extends VerticalLayout {
         setSizeFull();
         getStyle().setMarginTop("100px");
         setAlignItems(FlexComponent.Alignment.CENTER);
-
-
     }
 
     private void configureStoria() {
         Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
         if (idStoria != null) {
             storia = storiaService.getStoria(idStoria);
-            this.currentScenario = scenarioService.getPrimoScenario(storia);
+            StatoPartita statoPartita = null;
+
+            // Verifica se l'utente è autenticato
+            if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+                statoPartita = statoPartitaService.getStatoPartitaByUserAndStoria((User) user, storia);
+            }
+
+            if (statoPartita != null) {
+                int scenarioId = statoPartita.getScenarioId();
+                currentScenario = scenarioService.getScenario(scenarioId);
+            }
+
+            // Se lo stato della partita non è trovato o lo scenario non è valido
+            if (currentScenario == null) {
+                currentScenario = scenarioService.getPrimoScenario(storia);
+            }
+
             displayScenario(currentScenario);
         } else {
             add(new H1("Errore: ID storia non trovato nella sessione."));
         }
     }
 
+
+
+
     private void displayScenario(Scenario scenario) {
+        currentScenario = scenario;
 
         removeAll();
 
-        esci = new Button("X", e -> esciEvent());
+        esci = new Button("X");
         esci.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        HorizontalLayout esciLayout = new HorizontalLayout(esci);
+        esci.addClickListener(e -> esciEvent());
+        RouterLink catalogoLink = new RouterLink(CatalogoView.class);
+        catalogoLink.add(esci);
+
+        HorizontalLayout esciLayout = new HorizontalLayout(catalogoLink);
         esciLayout.setJustifyContentMode(JustifyContentMode.START);
 
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -148,9 +160,11 @@ public class GiocaStoria extends VerticalLayout {
         raccogliOggetti(scenario);
     }
 
+
     private Button casoScenarioFinale(Scenario scenario) {
         fine = new Button("Fine", e -> {
             inventarioService.deleteInventarioUser(user, storia);
+            statoPartitaService.deleteStatoPartitaByUserAndStoria((User) user, storia); // Elimina lo stato della partita
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
             if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
                 abstractUserService.deleteUser(user);
@@ -164,6 +178,7 @@ public class GiocaStoria extends VerticalLayout {
         fine.setVisible(false);
         return fine;
     }
+
 
     private void raccogliOggetti(Scenario scenario) {
         List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
@@ -188,7 +203,7 @@ public class GiocaStoria extends VerticalLayout {
             }
         }
         else{
-           configDialogIndovinello(collegamento);
+            configDialogIndovinello(collegamento);
         }
     }
 
@@ -214,13 +229,23 @@ public class GiocaStoria extends VerticalLayout {
     }
 
     private void esciEvent() {
-        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
+        if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             inventarioService.deleteInventarioUser(user, storia);
             abstractUserService.deleteUser(user);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
-        }
-        else{
-            //TODO
+            Notification.show("Utente non autenticato, operazioni di logout eseguite.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        } else {
+            StatoPartita statoPartita = statoPartitaService.getStatoPartitaByUserAndStoria((User) user, storia);
+            if (statoPartita == null) {
+                statoPartita = new StatoPartita();
+                statoPartita.setUsername(((User) user).getUsername());
+                statoPartita.setStoria(storia);
+            }
+            statoPartita.setScenarioId(currentScenario.getId());
+            statoPartitaService.saveStatoPartita(statoPartita);
+            Notification.show("Stato della partita salvato.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            getUI().ifPresent(ui -> ui.navigate("catalogo"));
         }
     }
+
 }

@@ -48,4 +48,7 @@ public class Scenario {
         this.storia = storia;
         this.primoScenario = false;
     }
+    public int getId() {
+        return idScenario;
+    }
 }
