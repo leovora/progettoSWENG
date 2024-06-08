@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <!-- Project from https://start.vaadin.com/project/6080685c-dcde-4a39-bc3f-256cd529dcf7 -->
-    <groupId>com.prova.application</groupId>
-    <artifactId>prova</artifactId>
-    <name>prova</name>
+    <groupId>com.progettosweng.application</groupId>
+    <artifactId>progettosweng</artifactId>
+    <name>progettosweng</name>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

@@ -183,8 +183,13 @@ public class GiocaStoria extends VerticalLayout {
     private void raccogliOggetti(Scenario scenario) {
         List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
         for(Oggetto oggetto : oggetti){
-            inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
-            Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            if(inventarioService.checkOggettoInventario(user, oggetto)){
+                Notification.show("Possiedi già: " + oggetto.getNomeOggetto());
+            }
+            else{
+                inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
+                Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            }
         }
     }
 
@@ -233,7 +238,7 @@ public class GiocaStoria extends VerticalLayout {
             inventarioService.deleteInventarioUser(user, storia);
             abstractUserService.deleteUser(user);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
-            Notification.show("Utente non autenticato, operazioni di logout eseguite.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            Notification.show("Utente non autenticato, il progresso non è stato salvato");
         } else {
             StatoPartita statoPartita = statoPartitaService.getStatoPartitaByUserAndStoria((User) user, storia);
             if (statoPartita == null) {
@@ -243,7 +248,7 @@ public class GiocaStoria extends VerticalLayout {
             }
             statoPartita.setScenarioId(currentScenario.getId());
             statoPartitaService.saveStatoPartita(statoPartita);
-            Notification.show("Stato della partita salvato.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            Notification.show("Stato della partita salvato.").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
         }
     }

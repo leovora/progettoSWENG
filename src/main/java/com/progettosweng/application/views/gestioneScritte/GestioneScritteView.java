@@ -14,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -30,6 +31,7 @@ public class GestioneScritteView extends VerticalLayout {
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     private final String username = authentication.getName();
 
+    @Autowired
     public GestioneScritteView(StoriaService storiaService) {
 
         this.storiaService = storiaService;

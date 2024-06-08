@@ -17,6 +17,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import jakarta.annotation.security.PermitAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -25,16 +26,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @PermitAll
 public class GestioneScenariView extends VerticalLayout {
 
+    private StoriaService storiaService;
+    private ScenarioService scenarioService;
     Grid<Scenario> grid = new Grid<>(Scenario.class);
     ModificaScenario modificaScenario;
     TextField filterText = new TextField();
-    private StoriaService storiaService;
-    private ScenarioService scenarioService;
     private final Integer idStoria;
 
     private final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     private final String username = authentication.getName();
 
+    @Autowired
     public GestioneScenariView(StoriaService storiaService, ScenarioService scenarioService) {
 
         this.storiaService = storiaService;

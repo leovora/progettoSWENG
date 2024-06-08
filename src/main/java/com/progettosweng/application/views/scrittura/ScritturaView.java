@@ -39,13 +39,8 @@ import java.util.List;
 @Route(value = "scrittura", layout = MainLayout.class)
 public class ScritturaView extends VerticalLayout {
 
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private StoriaService storiaService;
-
-    @Autowired
     private ScenarioService scenarioService;
 
     private Span scenarioCountLabel;
@@ -61,7 +56,10 @@ public class ScritturaView extends VerticalLayout {
 
     private int scenarioCount = 0;
 
-    public ScritturaView(ScenarioService scenarioService) {
+    @Autowired
+    public ScritturaView(UserService userService, StoriaService storiaService, ScenarioService scenarioService) {
+        this.userService = userService;
+        this.storiaService = storiaService;
         this.scenarioService = scenarioService;
         // Set up the vertical layout
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);

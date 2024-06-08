@@ -45,5 +45,9 @@ public class StatoPartitaService {
         statoPartitaRepository.delete(statoPartita);
     }
 
+    public List<StatoPartita> filtraStorie(String username, String filtro){
+        return statoPartitaRepository.filtraStorie(username, filtro);
+    }
+
 
 }

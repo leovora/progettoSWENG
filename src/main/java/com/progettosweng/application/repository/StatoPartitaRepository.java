@@ -19,5 +19,11 @@ public interface StatoPartitaRepository extends JpaRepository<StatoPartita, Long
     @Query("SELECT COUNT(sp) > 0 FROM StatoPartita sp WHERE sp.username = :username AND sp.storia = :storia")
     boolean existsByUsernameAndStoria(@Param("username") String username, @Param("storia") Storia storia);
 
+    //query che filtra per titolo tra le storie di un determinato utente
+    @Query("SELECT s FROM StatoPartita s " +
+            "WHERE LOWER(s.storia.titolo) LIKE LOWER(CONCAT('%', :filtro, '%')) " +
+            "AND s.username = :username")
+    List<StatoPartita> filtraStorie(@Param("username") String username, @Param("filtro") String filtro);
+
 
 }
