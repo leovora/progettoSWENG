@@ -14,9 +14,7 @@ public class CollegamentoService {
     @Autowired
     private CollegamentoRepository collegamentoRepository;
 
-    public Collegamento saveCollegamento(Collegamento collegamento) {
-        return collegamentoRepository.save(collegamento);
-    }
+
 
     public void deleteCollegamento(int id) {
         collegamentoRepository.deleteById(id);
