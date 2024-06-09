@@ -3,6 +3,7 @@ package com.progettosweng.application.views.gestioneGiocate;
 import com.progettosweng.application.entity.StatoPartita;
 import com.progettosweng.application.service.ScenarioService;
 import com.progettosweng.application.service.StatoPartitaService;
+import com.progettosweng.application.service.UserService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -32,6 +33,7 @@ public class GestioneGiocateView extends VerticalLayout {
 
     private final StatoPartitaService statoPartitaService;
     private final ScenarioService scenarioService;
+    private final UserService userService;
     private final Grid<StatoPartita> grid = new Grid<>(StatoPartita.class);
     private Button continueButton;
     private Button deleteButton;
@@ -39,9 +41,10 @@ public class GestioneGiocateView extends VerticalLayout {
 
 
     @Autowired
-    public GestioneGiocateView(StatoPartitaService statoPartitaService, ScenarioService scenarioService) {
+    public GestioneGiocateView(StatoPartitaService statoPartitaService, ScenarioService scenarioService, UserService userService) {
         this.statoPartitaService = statoPartitaService;
         this.scenarioService = scenarioService;
+        this.userService = userService;
 
         setSpacing(false);
 
@@ -55,7 +58,7 @@ public class GestioneGiocateView extends VerticalLayout {
                 StatoPartita statoPartita = event.getValue();
                 if (statoPartita != null) {
                     // Memorizza l'ID della storia nella VaadinSession
-                    VaadinSession.getCurrent().setAttribute("idStoria", statoPartita.getStoria().getId());
+                    VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
                     continueButton.setEnabled(true);
                     deleteButton.setEnabled(true);
                 }
@@ -85,15 +88,15 @@ public class GestioneGiocateView extends VerticalLayout {
 
     private void configureTable() {
         grid.removeAllColumns();
-        grid.addColumn(statoPartita -> statoPartita.getStoria().getTitolo()).setHeader("Titolo Storia");
-        grid.addColumn(statoPartita -> scenarioService.getScenario(statoPartita.getScenarioId()).getTitolo()).setHeader("Titolo scenario");
+        grid.addColumn(statoPartita -> statoPartitaService.getStoria(statoPartita).getTitolo()).setHeader("Titolo Storia");
+        grid.addColumn(statoPartitaService::getTitoloScenario).setHeader("Titolo scenario");
     }
 
     private void continuaPartita() {
         StatoPartita statoPartita = grid.asSingleSelect().getValue();
         if (statoPartita != null) {
             // Memorizza l'ID della storia nella VaadinSession
-            VaadinSession.getCurrent().setAttribute("idStoria", statoPartita.getStoria().getId());
+            VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
             // Naviga alla pagina GiocaStoria
             UI.getCurrent().navigate("gioca-storia");
         } else {
@@ -104,7 +107,7 @@ public class GestioneGiocateView extends VerticalLayout {
     private void eliminaPartita() {
         StatoPartita statoPartita = grid.asSingleSelect().getValue();
         if (statoPartita != null) {
-            statoPartitaService.deleteStatoPartita(statoPartita); // Elimina lo stato della partita
+            statoPartitaService.deleteStatoPartita(userService.getUser(getCurrentUsername()), statoPartita); // Elimina lo stato della partita
             loadStorieInCorso(); // Ricarica le storie in corso
             Notification.show("Stato della partita eliminato con successo").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         } else {

@@ -113,7 +113,6 @@ public class StoriaService {
         repository.save(storia);
     }
 
-    public int getId(Storia storia) {
-        return storia.getIdStoria();
-    }
+
+
 }

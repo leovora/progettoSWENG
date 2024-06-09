@@ -1,8 +1,16 @@
 package com.progettosweng.application.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class StatoPartita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,49 +23,17 @@ public class StatoPartita {
     @JoinColumn(name = "storia_id")
     private Storia storia;
 
-    private int scenarioId;
+    @ManyToOne
+    @JoinColumn(name = "scenario_id")
+    private Scenario scenario;
 
     @ManyToOne
     @JoinColumn(name = "oggetto_id", nullable = true)
     private Oggetto oggetto;
 
-    // Getters and setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Storia getStoria() {
-        return storia;
-    }
-
-    public void setStoria(Storia storia) {
+    public StatoPartita(Storia storia, String username, Scenario scenario){
         this.storia = storia;
-    }
-
-    public int getScenarioId() {
-        return scenarioId;
-    }
-
-    public void setScenarioId(int scenarioId) {
-        this.scenarioId = scenarioId;
-    }
-    public Oggetto getOggetto() {
-        return oggetto;
-    }
-
-    public void setOggetto(Oggetto oggetto) {
-        this.oggetto = oggetto;
+        this.username = username;
+        this.scenario = scenario;
     }
 }
