@@ -25,4 +25,7 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Integer> {
             "WHERE ss.idStoria = :storia " +
             "AND LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Scenario> getScenariFiltro(String filtro, int storia);
+
+    // Query per trovare l'ID della storia basato sul titolo
+
 }

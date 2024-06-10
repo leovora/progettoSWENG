@@ -26,6 +26,8 @@ public class ScenarioService {
         repository.deleteByStoria(storia);
     }
 
+
+
     //ritorna scenario cercando ID oppure null se non è presente
     public Scenario getScenario(int idScenario){
         return repository.findById(idScenario).orElse(null);
