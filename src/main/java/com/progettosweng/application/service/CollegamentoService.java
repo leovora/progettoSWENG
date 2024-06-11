@@ -14,10 +14,6 @@ public class CollegamentoService {
     @Autowired
     private CollegamentoRepository collegamentoRepository;
 
-    public Collegamento saveCollegamento(Collegamento collegamento) {
-        return collegamentoRepository.save(collegamento);//ok
-    }
-
     public void deleteCollegamento(int id) {
         collegamentoRepository.deleteById(id);
     }
@@ -41,7 +37,4 @@ public class CollegamentoService {
         collegamentoRepository.save(collegamento);
     }
 
-//    public Scenario eseguiScelta(Collegamento collegamento, AbstractUser user, Oggetto oggetto, InventarioService inventarioService){
-//        return collegamento.eseguiScelta(user, oggetto, inventarioService);
-//    }
 }

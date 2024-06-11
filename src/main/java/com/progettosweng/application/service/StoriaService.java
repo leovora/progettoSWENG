@@ -92,28 +92,19 @@ public class StoriaService {
         }
     }
 
-    // Ritorna creatore di una storia
-    public User getCreatore(int idStoria) {
-        Storia storia = getStoria(idStoria);
-        return storia.getCreatore();
-    }
 
     // Ritorna tutte le storie scritte da un utente
     public ArrayList<Storia> getStorieUtente(String user) {
         return repository.findByUsername(user);
     }
 
-    public Storia findStoriaById(int idStoria) {
-        Optional<Storia> optionalStoria = repository.findById(idStoria);
-        return optionalStoria.orElse(null);
-    }
+
 
     public void setNScenari(Storia storia, int numeroStato) {
         storia.setNumeroStato(numeroStato);
         repository.save(storia);
     }
 
-    public int getId(Storia storia) {
-        return storia.getIdStoria();
-    }
+
+
 }

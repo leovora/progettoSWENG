@@ -97,7 +97,7 @@ public class GiocaStoria extends VerticalLayout {
             }
 
             if (statoPartita != null) {
-                int scenarioId = statoPartita.getScenarioId();
+                int scenarioId = statoPartitaService.getScenarioId(((User) user).getUsername(),storia);
                 currentScenario = scenarioService.getScenario(scenarioId);
             }
 
@@ -183,8 +183,13 @@ public class GiocaStoria extends VerticalLayout {
     private void raccogliOggetti(Scenario scenario) {
         List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
         for(Oggetto oggetto : oggetti){
-            inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
-            Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            if(inventarioService.checkOggettoInventario(user, oggetto)){
+                Notification.show("Possiedi già: " + oggetto.getNomeOggetto());
+            }
+            else {
+                inventarioService.saveOggettoInventario(new Inventario(user, oggetto));
+                Notification.show("Hai raccolto: " + oggetto.getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            }
         }
     }
 
@@ -237,11 +242,9 @@ public class GiocaStoria extends VerticalLayout {
         } else {
             StatoPartita statoPartita = statoPartitaService.getStatoPartitaByUserAndStoria((User) user, storia);
             if (statoPartita == null) {
-                statoPartita = new StatoPartita();
-                statoPartita.setUsername(((User) user).getUsername());
-                statoPartita.setStoria(storia);
+                statoPartita = new StatoPartita(storia, ((User) user).getUsername(), currentScenario);
             }
-            statoPartita.setScenarioId(currentScenario.getId());
+            statoPartitaService.setScenario(statoPartita, currentScenario);
             statoPartitaService.saveStatoPartita(statoPartita);
             Notification.show("Stato della partita salvato.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));

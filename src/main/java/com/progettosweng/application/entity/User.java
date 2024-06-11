@@ -29,5 +29,4 @@ public class User extends AbstractUser{
     @Column(name = "COGNOME")
     private String cognome;
 
-
 }

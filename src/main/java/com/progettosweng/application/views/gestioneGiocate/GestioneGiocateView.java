@@ -1,17 +1,21 @@
 package com.progettosweng.application.views.gestioneGiocate;
 
 import com.progettosweng.application.entity.StatoPartita;
-import com.progettosweng.application.entity.Storia;
-import com.progettosweng.application.entity.User;
+import com.progettosweng.application.service.ScenarioService;
 import com.progettosweng.application.service.StatoPartitaService;
+import com.progettosweng.application.service.UserService;
 import com.progettosweng.application.views.MainLayout;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -28,74 +32,107 @@ import java.util.List;
 public class GestioneGiocateView extends VerticalLayout {
 
     private final StatoPartitaService statoPartitaService;
+    private final ScenarioService scenarioService;
+    private final UserService userService;
     private final Grid<StatoPartita> grid = new Grid<>(StatoPartita.class);
+    private Button continueButton;
+    private Button deleteButton;
+    TextField filterText = new TextField();
 
 
     @Autowired
-    public GestioneGiocateView(StatoPartitaService statoPartitaService) {
+    public GestioneGiocateView(StatoPartitaService statoPartitaService, ScenarioService scenarioService, UserService userService) {
         this.statoPartitaService = statoPartitaService;
-
+        this.scenarioService = scenarioService;
+        this.userService = userService;
 
         setSpacing(false);
 
-        H2 header = new H2("Storie in corso");
-        add(header);
-
+        add(getToolbar());
         loadStorieInCorso();
-        // Rimuovi tutte le colonne esistenti
-        grid.removeAllColumns();
-        // Aggiungi solo le colonne desiderate per l'username e il titolo della storia
-        grid.addColumn(StatoPartita::getUsername).setHeader("Username");
-        grid.addColumn(statoPartita -> statoPartita.getStoria().getTitolo()).setHeader("Titolo Storia");
-        grid.addColumn(StatoPartita::getScenarioId).setHeader("Scenario ID");
+        configureTable();
 
 
-// Aggiungi un pulsante al layout per continuare la partita
-        Button continueButton = new Button("Continua la partita");
-        continueButton.addClickListener(event -> {
-            StatoPartita statoPartita = grid.asSingleSelect().getValue();
-            if (statoPartita != null) {
-                // Memorizza l'ID della storia nella VaadinSession
-                VaadinSession.getCurrent().setAttribute("idStoria", statoPartita.getStoria().getId());
-                // Naviga alla pagina GiocaStoria
-                UI.getCurrent().navigate("gioca-storia");
-            } else {
-                Notification.show("Seleziona una partita da continuare").addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
-        });
-// Aggiungi un pulsante per eliminare lo stato di una partita selezionata
-        Button deleteButton = new Button("Elimina Stato Partita");
-        deleteButton.addClickListener(event -> {
-            StatoPartita statoPartita = grid.asSingleSelect().getValue();
-            if (statoPartita != null) {
-                statoPartitaService.deleteStatoPartita(statoPartita); // Elimina lo stato della partita
-                loadStorieInCorso(); // Ricarica le storie in corso
-                Notification.show("Stato della partita eliminato con successo").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            } else {
-                Notification.show("Seleziona una partita da eliminare").addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
-        });
         grid.asSingleSelect().addValueChangeListener(event -> {
-            StatoPartita statoPartita = event.getValue();
-            if (statoPartita != null) {
-                // Memorizza l'ID della storia nella VaadinSession
-                VaadinSession.getCurrent().setAttribute("idStoria", statoPartita.getStoria().getId());
+            if(event.getValue() != null){
+                StatoPartita statoPartita = event.getValue();
+                if (statoPartita != null) {
+                    // Memorizza l'ID della storia nella VaadinSession
+                    VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
+                    continueButton.setEnabled(true);
+                    deleteButton.setEnabled(true);
+                }
             }
+            else{
+                continueButton.setEnabled(false);
+                deleteButton.setEnabled(false);
+            }
+
         });
 
+        add(grid);
+        configureButtons();
+    }
 
+    private void configureButtons() {
+        continueButton = new Button("Continua la partita", event -> continuaPartita());
+        continueButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        continueButton.setEnabled(false);
+        deleteButton = new Button("Elimina progresso partita", event ->eliminaPartita());
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        deleteButton.setEnabled(false);
+        HorizontalLayout buttonLayout = new HorizontalLayout(continueButton, deleteButton);
+        buttonLayout.getStyle().setMarginTop("10px");
+        add(buttonLayout);
+    }
 
-        add(grid,continueButton,deleteButton);
+    private void configureTable() {
+        grid.removeAllColumns();
+        grid.addColumn(statoPartita -> statoPartitaService.getStoria(statoPartita).getTitolo()).setHeader("Titolo Storia");
+        grid.addColumn(statoPartitaService::getTitoloScenario).setHeader("Titolo scenario");
+    }
+
+    private void continuaPartita() {
+        StatoPartita statoPartita = grid.asSingleSelect().getValue();
+        if (statoPartita != null) {
+            // Memorizza l'ID della storia nella VaadinSession
+            VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
+            // Naviga alla pagina GiocaStoria
+            UI.getCurrent().navigate("gioca-storia");
+        } else {
+            Notification.show("Seleziona una partita da continuare").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
+
+    private void eliminaPartita() {
+        StatoPartita statoPartita = grid.asSingleSelect().getValue();
+        if (statoPartita != null) {
+            statoPartitaService.deleteStatoPartita(userService.getUser(getCurrentUsername()), statoPartita); // Elimina lo stato della partita
+            loadStorieInCorso(); // Ricarica le storie in corso
+            Notification.show("Stato della partita eliminato con successo").addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        } else {
+            Notification.show("Seleziona una partita da eliminare").addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
     }
 
     private void loadStorieInCorso() {
         String username = getCurrentUsername();
-        List<StatoPartita> storieInCorso = statoPartitaService.getStorieInCorsoByUser(username);
+        List<StatoPartita> storieInCorso = statoPartitaService.filtraStorie(username, filterText.getValue());
         grid.setItems(storieInCorso);
     }
 
     private String getCurrentUsername() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getUsername();
+    }
+
+    private Component getToolbar() {
+        filterText.setPlaceholder("Filtra per titolo...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY); //modo efficiente per frequenza delle chiamate al db
+        filterText.addValueChangeListener(e -> loadStorieInCorso()); //aggiorna la lista ogni volta che si scrive un nuovo filtro
+        filterText.getStyle().setMarginBottom("15px");
+
+        return new HorizontalLayout(filterText);
     }
 }

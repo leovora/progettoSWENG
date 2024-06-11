@@ -35,19 +35,11 @@ import java.util.List;
 @PermitAll
 public class ImpostazioniScenario extends VerticalLayout {
 
-    @Autowired
     private ScenarioService scenarioService;
-    @Autowired
     private StoriaService storiaService;
-    @Autowired
     private CollegamentoService collegamentoService;
-    @Autowired
     private SceltaSempliceService sceltaSempliceService;
-    @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
-//    @Autowired
-//    private SceltaOggettoService sceltaOggettoService;
-    @Autowired
     private OggettoService oggettoService;
 
     private final Storia storia;
@@ -59,22 +51,22 @@ public class ImpostazioniScenario extends VerticalLayout {
     private Button prossimo;
     private Button precedente;
     private Button aggiungiCollegamento;
-    private Button aggiungiOggetto;
     private Dialog dialogCollegamento;
     private Dialog dialogOggetto;
     private ComboBox<Scenario> comboBoxScenario;
     private ComboBox<String> comboBoxScelta;
     private ComboBox<Scenario> comboBoxScenarioSecondario;
-    private TextField domandaIndovinello;
-    private TextField rispostaIndovinello;
+    private TextArea domandaIndovinello;
+    private TextArea rispostaIndovinello;
     private ComboBox<Oggetto> comboBoxOggetto;
     private TextField nomeScelta;
     private TextField nomeOggetto;
     private Grid<Collegamento> scelteTable = new Grid<>(Collegamento.class);
     private Registration registration;
     private Checkbox scenarioFinale;
-    private Span contaCollegamenti;
+    private final Span contaCollegamenti;
 
+    @Autowired
     public ImpostazioniScenario(StoriaService storiaService, ScenarioService scenarioService, CollegamentoService collegamentoService) {
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
@@ -117,6 +109,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         VerticalLayout verticalLayout = new VerticalLayout(titoloScenario, descrizioneScenario);
 
+        Button aggiungiOggetto;
         HorizontalLayout buttonLayout = new HorizontalLayout(
                 aggiungiOggetto = new Button("Aggiungi oggetto", e -> dialogOggetto.open()),
                 aggiungiCollegamento = new Button("Aggiungi collegamento", e -> dialogCollegamento.open())
@@ -261,10 +254,10 @@ public class ImpostazioniScenario extends VerticalLayout {
                 verticalLayout.add(salvaCollegamentoSemplice);
             } else if ("Scelta con indovinello".equals(selezione)) {
                 VerticalLayout layoutIndovinello = new VerticalLayout();
-                domandaIndovinello = new TextField("Domanda indovinello");
+                domandaIndovinello = new TextArea("Domanda indovinello");
                 domandaIndovinello.setMaxLength(255);
                 domandaIndovinello.isRequired();
-                rispostaIndovinello = new TextField("Risposta indovinello");
+                rispostaIndovinello = new TextArea("Risposta indovinello");
                 rispostaIndovinello.setMaxLength(255);
                 rispostaIndovinello.isRequired();
                 comboBoxScenarioSecondario = new ComboBox<>("Scegli scenario in caso di risposta sbagliata");

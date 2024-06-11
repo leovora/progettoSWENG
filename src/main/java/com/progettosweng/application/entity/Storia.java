@@ -41,7 +41,5 @@ public class Storia{
         this.creatore = creatore;
     }
 
-    public int getId() {
-        return idStoria;
-    }
+
 }
