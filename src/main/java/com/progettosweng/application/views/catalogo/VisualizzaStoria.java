@@ -73,7 +73,7 @@ public class VisualizzaStoria extends FormLayout {
     }
 
 
-    private void mostraTitoloStoria() { //mostra dialog
+    private void mostraTitoloStoria() { //commento il codice
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(true);
         dialog.setCloseOnOutsideClick(true);
