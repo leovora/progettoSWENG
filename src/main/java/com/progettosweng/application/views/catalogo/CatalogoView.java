@@ -4,6 +4,7 @@ import com.progettosweng.application.entity.Storia;
 import com.progettosweng.application.service.StatoPartitaService;
 import com.progettosweng.application.service.StoriaService;
 import com.progettosweng.application.service.UserService;
+import com.progettosweng.application.service.ScenarioService;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,13 +30,13 @@ public class CatalogoView extends VerticalLayout {
     private StoriaService storiaService;
     private final StatoPartitaService statoPartitaService;
     private final UserService userService;
+    private final ScenarioService scenarioService;
 
-
-    public CatalogoView(StoriaService storiaService, StatoPartitaService statoPartitaService, UserService userService) {
-
+    public CatalogoView(StoriaService storiaService, StatoPartitaService statoPartitaService, UserService userService, ScenarioService scenarioService) {
         this.storiaService = storiaService;
         this.statoPartitaService = statoPartitaService;
         this.userService = userService;
+        this.scenarioService = scenarioService;
 
         addClassName("list-view");
         setSizeFull();
@@ -72,7 +73,7 @@ public class CatalogoView extends VerticalLayout {
 
     //metodo che crea nuovo form di modifica
     private void configureVisualizza() {
-        visualizzaStoria = new VisualizzaStoria(userService,statoPartitaService);
+        visualizzaStoria = new VisualizzaStoria(userService, statoPartitaService, scenarioService);
         visualizzaStoria.setWidth("25em");
 
         visualizzaStoria.addListener(VisualizzaStoria.IndietroEvent.class, e -> closeEditor());
@@ -87,7 +88,6 @@ public class CatalogoView extends VerticalLayout {
             }
         });
     }
-
 
     //metodo che imposta la toolbar con la casella per filtrare e il bottone per creare nuova storia
     private Component getToolbar() {
@@ -140,4 +140,3 @@ public class CatalogoView extends VerticalLayout {
         }
     }
 }
-

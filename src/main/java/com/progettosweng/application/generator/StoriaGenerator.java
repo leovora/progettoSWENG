@@ -32,7 +32,7 @@ public class StoriaGenerator  implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //generateStorie();
+       // generateStorie();
     }
 
     private void generateStorie() {

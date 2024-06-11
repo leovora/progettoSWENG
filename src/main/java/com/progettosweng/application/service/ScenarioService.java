@@ -26,6 +26,8 @@ public class ScenarioService {
         repository.deleteByStoria(storia);
     }
 
+
+
     //ritorna scenario cercando ID oppure null se non è presente
     public Scenario getScenario(int idScenario){
         return repository.findById(idScenario).orElse(null);
@@ -36,7 +38,7 @@ public class ScenarioService {
 
     //ritorna arrayList con tutti gli scenari
     public ArrayList<Scenario> getAllScenari() {
-        Collection<Scenario> scenari = repository.findAll();
+        Collection<Scenario> scenari = repository.findAll();//comment
         return new ArrayList<>(scenari);
     }
     @Transactional

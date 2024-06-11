@@ -13,7 +13,7 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Integer> {
     //elimina scenario associato a storia data in input
     void deleteByStoria(Storia storia);
 
-    @Query("SELECT s FROM Scenario s JOIN s.storia st WHERE st.creatore.username = :username")
+    @Query("SELECT s FROM Scenario s JOIN s.storia st WHERE st.creatore.username = :username")//ok
     List<Scenario> findAllByUserUsername(@Param("username") String username);
 
     List<Scenario> findByStoria(Storia storia);
@@ -25,4 +25,7 @@ public interface ScenarioRepository extends JpaRepository<Scenario, Integer> {
             "WHERE ss.idStoria = :storia " +
             "AND LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%'))")
     List<Scenario> getScenariFiltro(String filtro, int storia);
+
+    // Query per trovare l'ID della storia basato sul titolo
+
 }

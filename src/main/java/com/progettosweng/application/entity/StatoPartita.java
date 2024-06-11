@@ -22,7 +22,7 @@ public class StatoPartita {
     @ManyToOne
     @JoinColumn(name = "storia_id")
     private Storia storia;
-
+  
     @ManyToOne
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;
@@ -30,7 +30,7 @@ public class StatoPartita {
     @ManyToOne
     @JoinColumn(name = "oggetto_id", nullable = true)
     private Oggetto oggetto;
-
+  
     public StatoPartita(Storia storia, String username, Scenario scenario){
         this.storia = storia;
         this.username = username;
