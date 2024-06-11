@@ -1,13 +1,18 @@
 package com.progettosweng.application.views.catalogo;
 
+import com.progettosweng.application.entity.Collegamento;
+import com.progettosweng.application.entity.Scenario;
 import com.progettosweng.application.entity.Storia;
-import com.progettosweng.application.service.StatoPartitaService;
-import com.progettosweng.application.service.StoriaService;
-import com.progettosweng.application.service.UserService;
-import com.progettosweng.application.service.ScenarioService;
+import com.progettosweng.application.service.*;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,8 +21,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.component.html.H1;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 @PageTitle("Storie | Catalogo")
 @Route(value = "catalogo", layout = MainLayout.class)
@@ -31,12 +39,14 @@ public class CatalogoView extends VerticalLayout {
     private final StatoPartitaService statoPartitaService;
     private final UserService userService;
     private final ScenarioService scenarioService;
+    private final CollegamentoService collegamentoService;
 
-    public CatalogoView(StoriaService storiaService, StatoPartitaService statoPartitaService, UserService userService, ScenarioService scenarioService) {
+    public CatalogoView(StoriaService storiaService, StatoPartitaService statoPartitaService, UserService userService, ScenarioService scenarioService, CollegamentoService collegamentoService) {
         this.storiaService = storiaService;
         this.statoPartitaService = statoPartitaService;
         this.userService = userService;
         this.scenarioService = scenarioService;
+        this.collegamentoService = collegamentoService;
 
         addClassName("list-view");
         setSizeFull();
@@ -77,16 +87,69 @@ public class CatalogoView extends VerticalLayout {
         visualizzaStoria.setWidth("25em");
 
         visualizzaStoria.addListener(VisualizzaStoria.IndietroEvent.class, e -> closeEditor());
-        visualizzaStoria.addListener(VisualizzaStoria.GiocaEvent.class, e -> {
-            Storia storia = e.getStoria();
-            if (storia != null) {
-                // Imposta la variabile di sessione
-                VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
+        visualizzaStoria.addListener(VisualizzaStoria.GiocaEvent.class, this::gioca);
+        visualizzaStoria.addListener(VisualizzaStoria.PrimoScenarioEvent.class, this::primoScenario);
+    }
 
-                // Reindirizza alla pagina gioca-storia
-                getUI().ifPresent(ui -> ui.navigate("gioca-storia"));
+    private void gioca(VisualizzaStoria.GiocaEvent e) {
+        Storia storia = e.getStoria();
+        if (storia != null) {
+            VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
+            getUI().ifPresent(ui -> ui.navigate("gioca-storia"));
+        }
+    }
+
+    private void primoScenario(VisualizzaStoria.PrimoScenarioEvent e) {
+        Storia storia = e.getStoria();
+        Dialog dialog = new Dialog();
+        dialog.setCloseOnEsc(true);
+        dialog.setCloseOnOutsideClick(true);
+
+        dialog.setWidth("50%");
+//        dialog.setHeight("50%");
+
+        if (storia != null) {
+            Scenario primoScenario = scenarioService.getPrimoScenario(storia);
+
+            if (primoScenario != null) {
+                VerticalLayout layoutDialog = new VerticalLayout();
+                layoutDialog.setAlignItems(Alignment.CENTER);
+                H1 titolo = new H1("Primo scenario di \"" + storia.getTitolo() + "\"");
+                titolo.getStyle().setMarginBottom("15px");
+                H2 titoloLabel = new H2(primoScenario.getTitolo());
+                Div descrizione = new Div();
+                descrizione.setText(primoScenario.getDescrizione());
+
+                VerticalLayout verticalLayout = new VerticalLayout(titoloLabel, descrizione);
+                verticalLayout.setAlignItems(Alignment.CENTER);
+
+                HorizontalLayout horizontalLayout = new HorizontalLayout();
+                horizontalLayout.setJustifyContentMode(JustifyContentMode.BETWEEN);
+
+                List<Collegamento> collegamenti = collegamentoService.getCollegamentoByScenario(primoScenario);
+                for (Collegamento collegamento : collegamenti) {
+                    Button sceltaButton = new Button(collegamento.getNomeScelta());
+                    horizontalLayout.add(sceltaButton);
+                }
+
+                Div container = new Div();
+                container.getStyle().setBackground("#154c79");
+                container.getStyle().set("padding", "20px");
+                container.getStyle().set("border-radius", "10px");
+                container.getStyle().setPaddingLeft("47px");
+                container.getStyle().setPaddingRight("47px");
+                container.add(verticalLayout, horizontalLayout);
+
+                layoutDialog.add(titolo, container);
+                dialog.add(layoutDialog);
+                dialog.open();
+
+            } else {
+                Notification.show("Nessun primo scenario trovato per questa storia").addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-        });
+        }
+
+
     }
 
     //metodo che imposta la toolbar con la casella per filtrare e il bottone per creare nuova storia
