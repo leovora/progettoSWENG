@@ -15,7 +15,7 @@ public class CollegamentoService {
     private CollegamentoRepository collegamentoRepository;
 
     public Collegamento saveCollegamento(Collegamento collegamento) {
-        return collegamentoRepository.save(collegamento);
+        return collegamentoRepository.save(collegamento);//ok
     }
 
     public void deleteCollegamento(int id) {

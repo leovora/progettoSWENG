@@ -19,7 +19,7 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.component.dialog.Dialog;
 
 public class ModificaStoria extends FormLayout {
-    Binder<Storia> binder = new BeanValidationBinder<>(Storia.class);
+    Binder<Storia> binder = new BeanValidationBinder<>(Storia.class);//op
     TextField titolo = new TextField("Titolo");
     TextArea descrizione = new TextArea("Descrizione");
     Dialog conferma = new Dialog();
