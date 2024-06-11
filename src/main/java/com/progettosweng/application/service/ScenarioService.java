@@ -38,7 +38,7 @@ public class ScenarioService {
 
     //ritorna arrayList con tutti gli scenari
     public ArrayList<Scenario> getAllScenari() {
-        Collection<Scenario> scenari = repository.findAll();
+        Collection<Scenario> scenari = repository.findAll();//comment
         return new ArrayList<>(scenari);
     }
     @Transactional
