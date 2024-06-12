@@ -26,6 +26,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
 
+/**
+ * Classe che implementa la pagina in cui vengono visualizzate le storie iniziate da un utente registrato
+ */
+
 @PageTitle("Giocate | Gestione")
 @Route(value = "gestioneGiocate", layout = MainLayout.class)
 @PermitAll
@@ -57,7 +61,6 @@ public class GestioneGiocateView extends VerticalLayout {
             if(event.getValue() != null){
                 StatoPartita statoPartita = event.getValue();
                 if (statoPartita != null) {
-                    // Memorizza l'ID della storia nella VaadinSession
                     VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
                     continueButton.setEnabled(true);
                     deleteButton.setEnabled(true);
@@ -74,6 +77,7 @@ public class GestioneGiocateView extends VerticalLayout {
         configureButtons();
     }
 
+    // Configura i pulsanti
     private void configureButtons() {
         continueButton = new Button("Continua la partita", event -> continuaPartita());
         continueButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -86,24 +90,25 @@ public class GestioneGiocateView extends VerticalLayout {
         add(buttonLayout);
     }
 
+    // Configura la tabella delle storie giocate
     private void configureTable() {
         grid.removeAllColumns();
         grid.addColumn(statoPartita -> statoPartitaService.getStoria(statoPartita).getTitolo()).setHeader("Titolo Storia");
         grid.addColumn(statoPartitaService::getTitoloScenario).setHeader("Titolo scenario");
     }
 
+    // Azione per continuare una partita
     private void continuaPartita() {
         StatoPartita statoPartita = grid.asSingleSelect().getValue();
         if (statoPartita != null) {
-            // Memorizza l'ID della storia nella VaadinSession
             VaadinSession.getCurrent().setAttribute("idStoria", statoPartitaService.getStoriaId(statoPartita));
-            // Naviga alla pagina GiocaStoria
             UI.getCurrent().navigate("gioca-storia");
         } else {
             Notification.show("Seleziona una partita da continuare").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
+    // Azione per eliminare una partita
     private void eliminaPartita() {
         StatoPartita statoPartita = grid.asSingleSelect().getValue();
         if (statoPartita != null) {
@@ -115,17 +120,20 @@ public class GestioneGiocateView extends VerticalLayout {
         }
     }
 
+    // Carica le storie in corso
     private void loadStorieInCorso() {
         String username = getCurrentUsername();
         List<StatoPartita> storieInCorso = statoPartitaService.filtraStorie(username, filterText.getValue());
         grid.setItems(storieInCorso);
     }
 
+    // Ottiene il nome utente corrente
     private String getCurrentUsername() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getUsername();
     }
 
+    // Ottiene la toolbar per il filtro
     private Component getToolbar() {
         filterText.setPlaceholder("Filtra per titolo...");
         filterText.setClearButtonVisible(true);

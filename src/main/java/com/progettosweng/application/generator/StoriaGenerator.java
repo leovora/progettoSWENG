@@ -6,29 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * Classe che genera nel database una serie di storie di prova
+ */
+
 @Component
 public class StoriaGenerator  implements CommandLineRunner {
 
     @Autowired
     private StoriaService storiaService;
-
     @Autowired
     private UserService userService;
-
     @Autowired
     private ScenarioService scenarioService;
-
     @Autowired
     private SceltaSempliceService sceltaSempliceService;
-
     @Autowired
     private SceltaIndovinelloService sceltaIndovinelloService;
-
     @Autowired
     private OggettoService oggettoService;
-
-    @Autowired 
-    private CollegamentoService collegamentoService;
 
     @Override
     public void run(String... args) throws Exception {

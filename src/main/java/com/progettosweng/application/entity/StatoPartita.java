@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Classe che rappresenta il progresso di un determinato giocatore per una determinata storia
+ */
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -26,10 +30,6 @@ public class StatoPartita {
     @ManyToOne
     @JoinColumn(name = "scenario_id")
     private Scenario scenario;
-
-    @ManyToOne
-    @JoinColumn(name = "oggetto_id", nullable = true)
-    private Oggetto oggetto;
   
     public StatoPartita(Storia storia, String username, Scenario scenario){
         this.storia = storia;

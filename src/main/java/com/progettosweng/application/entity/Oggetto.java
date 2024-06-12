@@ -6,6 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Classe che rappresenta un oggetto da raccogliere in una storia.
+ * Viene raccolto in un determinato scenario della storia
+ */
+
 @Entity
 @Data
 @AllArgsConstructor

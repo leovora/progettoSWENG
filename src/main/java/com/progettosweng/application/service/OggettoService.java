@@ -15,12 +15,36 @@ public class OggettoService {
     @Autowired
     private OggettoRepository oggettoRepository;
 
-    public Oggetto saveOggetto(Oggetto oggetto){return oggettoRepository.save(oggetto);}
+    /**
+     * Salva un oggetto nel database.
+     * @param oggetto l'oggetto da salvare
+     */
+    public void saveOggetto(Oggetto oggetto) {
+        oggettoRepository.save(oggetto);
+    }
 
-    public List<Oggetto> getOggettiStoria(Storia storia) {return oggettoRepository.findByStoria(storia);}
+    /**
+     * Ottiene tutti gli oggetti associati a una storia.
+     * @param storia la storia di cui ottenere gli oggetti
+     * @return la lista degli oggetti associati alla storia
+     */
+    public List<Oggetto> getOggettiStoria(Storia storia) {
+        return oggettoRepository.findByStoria(storia);
+    }
 
-    public List<Oggetto> getOggettiScenario(Scenario scenario) { return oggettoRepository.findByScenario(scenario);}
+    /**
+     * Ottiene tutti gli oggetti associati a uno scenario.
+     * @param scenario lo scenario di cui ottenere gli oggetti
+     * @return la lista degli oggetti associati allo scenario
+     */
+    public List<Oggetto> getOggettiScenario(Scenario scenario) {
+        return oggettoRepository.findByScenario(scenario);
+    }
 
+    /**
+     * Elimina gli oggetti associati a una storia dal database.
+     * @param storia la storia di cui eliminare gli oggetti
+     */
     public void deleteOggettoByStoria(Storia storia) {
         oggettoRepository.deleteByStoria(storia);
     }

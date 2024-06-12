@@ -12,8 +12,19 @@ public class SceltaSempliceService {
     @Autowired
     private SceltaSempliceRepository sceltaSempliceRepository;
 
-    public SceltaSemplice saveSceltaSemplice(SceltaSemplice scelta){return sceltaSempliceRepository.save(scelta);}
+    /**
+     * Salva una scelta semplice nel database.
+     * @param scelta la scelta semplice da salvare
+     * @return la scelta semplice salvata
+     */
+    public SceltaSemplice saveSceltaSemplice(SceltaSemplice scelta) {
+        return sceltaSempliceRepository.save(scelta);
+    }
 
+    /**
+     * Elimina le scelte semplici associate a una storia dal database.
+     * @param storia la storia di cui eliminare le scelte semplici
+     */
     public void deleteSceltaSempliceByStoria(Storia storia) {
         sceltaSempliceRepository.deleteByStoria(storia);
     }

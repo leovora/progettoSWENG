@@ -7,6 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * AnonymousUser rappresenta un utente anonimo nel sistema.
+ * Estende AbstractUser.
+ */
+
 @Entity
 @Data
 @NoArgsConstructor

@@ -14,6 +14,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.component.dialog.Dialog;
 
+/**
+ * Classe che implementa la pagina di login
+ */
+
 @Route("login")
 @PageTitle("Login | PathFinder")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {

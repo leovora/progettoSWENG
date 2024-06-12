@@ -4,6 +4,11 @@ import com.progettosweng.application.service.InventarioService;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * Classe astratta che rappresenta un generico collegamento tra scenari.
+ * Contiene un metodo astratto eseguiScelta() implementato poi in sceltaSemplice e sceltaIndovinello
+ */
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -47,6 +52,5 @@ public abstract class Collegamento {
     }
 
     public abstract Scenario eseguiScelta();
-    //public abstract Scenario eseguiScelta(AbstractUser user, Oggetto oggetto, InventarioService inventarioService);
 
 }

@@ -18,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * Classe che implementa la pagina in cui vengono visualizzate e modificate le storie scritte dall'utente loggato
+ */
+
 @PageTitle("Storia | Gestione")
 @Route(value = "gestioneScritte", layout = MainLayout.class)
 @PermitAll
@@ -79,6 +83,7 @@ public class GestioneScritteView extends VerticalLayout {
         modificaStoria.addListener(ModificaStoria.MostraScenariEvent.class, this::mostraScenari);
     }
 
+    //metodo che permette di navigare alla pagina di gestione degli scenari
     private void mostraScenari(ModificaStoria.MostraScenariEvent event) {
         Storia storia = event.getStoria();
         if (storia != null) {
@@ -87,12 +92,14 @@ public class GestioneScritteView extends VerticalLayout {
         }
     }
 
+    //metodo che elimina una storia scritta e tutte le sue componenti
     private void eliminaStoria(ModificaStoria.EliminaEvent event) {
         storiaService.deleteStoria(event.getStoria());
         updateList();
         closeEditor();
     }
 
+    //metodo che salva le modifiche apportate a una storia
     private void salvaStoria(ModificaStoria.SalvaEvent event) {
         storiaService.saveStoria(event.getStoria());
         updateList();

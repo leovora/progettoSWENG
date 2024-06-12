@@ -30,17 +30,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Classe che implementa la pagina di impostazione degli scenari durante la creazione di una storia,
+ * gestisce quindi la creazione dei collegamenti tra gli scenari.
+ */
+
 @PageTitle("Scenari | Scrittura")
 @Route(value = "scenari", layout = MainLayout.class)
 @PermitAll
 public class ImpostazioniScenario extends VerticalLayout {
 
-    private ScenarioService scenarioService;
-    private StoriaService storiaService;
-    private CollegamentoService collegamentoService;
+    private final ScenarioService scenarioService;
+    private final StoriaService storiaService;
+    private final CollegamentoService collegamentoService;
     private SceltaSempliceService sceltaSempliceService;
     private SceltaIndovinelloService sceltaIndovinelloService;
-    private OggettoService oggettoService;
+    private final OggettoService oggettoService;
 
     private final Storia storia;
     private final int idStoria = (int) VaadinSession.getCurrent().getAttribute("idStoria");
@@ -67,10 +72,13 @@ public class ImpostazioniScenario extends VerticalLayout {
     private final Span contaCollegamenti;
 
     @Autowired
-    public ImpostazioniScenario(StoriaService storiaService, ScenarioService scenarioService, CollegamentoService collegamentoService) {
+    public ImpostazioniScenario(StoriaService storiaService, ScenarioService scenarioService, CollegamentoService collegamentoService, OggettoService oggettoService, SceltaSempliceService sceltaSempliceService, SceltaIndovinelloService sceltaIndovinelloService) {
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
         this.collegamentoService = collegamentoService;
+        this.oggettoService = oggettoService;
+        this.sceltaSempliceService = sceltaSempliceService;
+        this.sceltaIndovinelloService = sceltaIndovinelloService;
 
         storia = storiaService.getStoria(idStoria);
         this.scenari = scenarioService.getScenariByStoria(storia);
@@ -86,10 +94,10 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         configDialogOggetto();
         configDialogCollegamento();
-        configScelteTable();
         updateScenario();
     }
 
+    // metodo che imposta il contenuto principale della vista
     private Component getContent() {
         titoloScenario = new TextField("Titolo dello scenario");
         titoloScenario.setReadOnly(true);
@@ -137,12 +145,15 @@ public class ImpostazioniScenario extends VerticalLayout {
         return container;
     }
 
+    // metodo che aggiorna lo scenario corrente nella vista
     private void updateScenario() {
         Scenario currentScenario = scenari.get(currentIndex);
         titoloScenario.setValue(currentScenario.getTitolo());
         descrizioneScenario.setValue(currentScenario.getDescrizione());
         scenarioFinale.setValue(false);
+        contaCollegamenti.setText("Collegamenti inseriti: " + collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex)).size());
 
+        //caso ultimo scenario
         if (currentIndex == scenari.size() - 1) {
             prossimo.setText("Fine");
             prossimo.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
@@ -164,29 +175,28 @@ public class ImpostazioniScenario extends VerticalLayout {
         }
 
         precedente.setEnabled(currentIndex != 0);
-        updateContaCollegamenti();
-        updateScelteTable();
     }
 
+    // metodo che passa allo scenario successivo nella lista di scenari
     private void nextScenario() {
         if((collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex)).size() < 2) && !scenarioFinale.getValue()){
             Notification.show("Aggiungi almeno 2 collegamenti").addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
         else if (currentIndex < scenari.size() - 1) {
             currentIndex++;
-            configScelteTable();
             updateScenario();
         }
     }
 
+    // metodo che passa allo scenario precedente nella lista di scenari
     private void previousScenario() {
         if (currentIndex > 0) {
             currentIndex--;
-            configScelteTable();
             updateScenario();
         }
     }
 
+    //metodo che configura il dialog per l'aggiunta di un oggetto
     private void configDialogOggetto() {
         dialogOggetto = new Dialog();
         dialogOggetto.getElement().getClassList().add("centered-dialog-overlay");
@@ -203,6 +213,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
     }
 
+    //metodo che salva un oggetto per quel determinato scenario
     private void salvaOggetto() {
         if(!nomeOggetto.isEmpty()){
             Scenario currentScenario = scenari.get(currentIndex);
@@ -221,6 +232,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
     }
 
+    //metodo che configura il dialog per la creazione dei collegamenti
     private void configDialogCollegamento() {
         dialogCollegamento = new Dialog();
         dialogCollegamento.getElement().getClassList().add("centered-dialog-overlay");
@@ -245,6 +257,7 @@ public class ImpostazioniScenario extends VerticalLayout {
 
         VerticalLayout verticalLayout = new VerticalLayout(titoloCollegamento, nomeScelta, comboBoxScenario, comboBoxScelta);
 
+        //gestione dei diversi tipi di collegamento
         comboBoxScelta.addValueChangeListener(event -> {
             verticalLayout.removeAll();
             verticalLayout.add(titoloCollegamento, nomeScelta, comboBoxScenario, comboBoxScelta);
@@ -289,6 +302,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         dialogCollegamento.add(verticalLayout);
     }
 
+    //metodo che salva l'oggetto richiesto per un collegamento
     private void SalvaCollegamentoOggetto() {
         if(!nomeScelta.isEmpty()
                 && !comboBoxScenario.isEmpty()
@@ -307,8 +321,6 @@ public class ImpostazioniScenario extends VerticalLayout {
             sceltaSempliceService.saveSceltaSemplice(scelta);
             collegamentoService.setOggettoRichiesto(scelta.getIdCollegamento(), oggetto);
             dialogCollegamento.close();
-            configScelteTable();
-            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -318,6 +330,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         }
     }
 
+    //metodo che salva un collegamento con l'indovinello
     private void SalvaCollegamentoIndovinello() {
         if(!nomeScelta.isEmpty()
                 && !comboBoxScenario.isEmpty()
@@ -339,8 +352,6 @@ public class ImpostazioniScenario extends VerticalLayout {
 
             sceltaIndovinelloService.saveSceltaIndovinello(scelta);
             dialogCollegamento.close();
-            configScelteTable();
-            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -350,6 +361,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         }
     }
 
+    //metodo che salva un collegamento semplice
     private void SalvaCollegamentoSemplice() {
         if(!nomeScelta.isEmpty()
                 && !comboBoxScenario.isEmpty()
@@ -361,8 +373,6 @@ public class ImpostazioniScenario extends VerticalLayout {
 
             sceltaSempliceService.saveSceltaSemplice(scelta);
             dialogCollegamento.close();
-            configScelteTable();
-            updateScelteTable();
             configDialogCollegamento();
             updateScenario();
             Notification.show("Collegamento salvato");
@@ -372,44 +382,5 @@ public class ImpostazioniScenario extends VerticalLayout {
         }
 
     }
-
-    //TODO: Sistema tabella che mostra scelte inserite
-    private void configScelteTable() {
-        // Rimuovi tutte le colonne esistenti
-        scelteTable.removeAllColumns();
-
-        // Aggiungi le colonne con espressioni lambda corrette
-        scelteTable.addColumn(Collegamento::getNomeScelta).setHeader("Nome Scelta");
-        scelteTable.addColumn(collegamento -> collegamento.getScenario2().getTitolo()).setHeader("Scenario Destinazione");
-
-        // Imposta l'altezza massima della tabella
-        scelteTable.setMaxHeight("300px");
-
-        // Imposta la modalità di selezione
-        scelteTable.setSelectionMode(Grid.SelectionMode.NONE);
-
-        // Carica i collegamenti e aggiorna la tabella
-        updateScelteTable();
-    }
-
-    private void updateScelteTable() {
-        // Carica i collegamenti per lo scenario corrente
-        List<Collegamento> collegamenti = collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex));
-
-        // Verifica il contenuto della lista
-        System.out.println("Collegamenti caricati: " + collegamenti.size());
-        for (Collegamento collegamento : collegamenti) {
-            System.out.println("Nome Scelta: " + collegamento.getNomeScelta() + ", Scenario Destinazione: " + collegamento.getScenario2().getTitolo());
-        }
-
-        // Aggiorna la tabella con i nuovi dati
-        scelteTable.setItems(collegamenti);
-    }
-
-    public void updateContaCollegamenti() {
-        contaCollegamenti.remove();
-        contaCollegamenti.setText("Collegamenti inseriti: " +  collegamentoService.getCollegamentoByScenario(scenari.get(currentIndex)).size());
-    }
-
 
 }
