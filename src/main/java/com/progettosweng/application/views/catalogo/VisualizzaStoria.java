@@ -60,45 +60,16 @@ public class VisualizzaStoria extends FormLayout {
     private HorizontalLayout createButtonLayout() {
         gioca.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         indietro.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        mostraScenario.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
         gioca.addClickListener(event -> fireEvent(new GiocaEvent(this, storia)));
         indietro.addClickListener(event -> fireEvent(new IndietroEvent(this)));
-        mostraScenario.addClickListener(event -> mostraTitoloStoria());
+        mostraScenario.addClickListener(event -> fireEvent(new PrimoScenarioEvent(this, storia)));
 
         gioca.addClickShortcut(Key.ENTER);
         indietro.addClickShortcut(Key.ESCAPE);
 
         return new HorizontalLayout(gioca, mostraScenario, indietro);
     }
-
-
-    private void mostraTitoloStoria() { //commento il codice
-        Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(true);
-        dialog.setCloseOnOutsideClick(true);
-
-        // Imposta le dimensioni del dialogo
-        dialog.setWidth("50%");  // Imposta la larghezza al 50% della larghezza della finestra
-        dialog.setHeight("50%"); // Imposta l'altezza al 50% dell'altezza della finestra
-
-        if (storia != null) {
-            Scenario primoScenario = scenarioService.getPrimoScenario(storia);
-            if (primoScenario != null) {
-                Div descrizioneDiv = new Div(new Span("Descrizione: " + primoScenario.getDescrizione()));
-                Div titoloDiv = new Div(new Span("Titolo: " + primoScenario.getTitolo()));
-                dialog.add(descrizioneDiv);
-                dialog.add(titoloDiv);
-            } else {
-                dialog.add(new Div(new Span("Nessun primo scenario trovato per questa storia.")));
-            }
-        } else {
-            dialog.add(new Div(new Span("Nessuna storia selezionata.")));
-        }
-
-        dialog.open();
-    }
-
 
     public void setStoria(Storia storia) {
         this.storia = storia;
@@ -142,6 +113,12 @@ public class VisualizzaStoria extends FormLayout {
     public static class IndietroEvent extends VisualizzaStoria.VisualizzaStoriaEvent {
         IndietroEvent(VisualizzaStoria source) {
             super(source, null);
+        }
+    }
+
+    public static class PrimoScenarioEvent extends VisualizzaStoriaEvent {
+        PrimoScenarioEvent(VisualizzaStoria source, Storia storia) {
+            super(source, storia);
         }
     }
 
