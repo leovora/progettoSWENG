@@ -35,20 +35,19 @@ public class MainLayout extends AppLayout {
         createHeader();
     }
 
+    // Crea l'intestazione dell'applicazione
     private void createHeader() {
+        // Crea il logo e il pulsante per il menu laterale
         H1 logo = new H1("PathFinder");
         logo.addClassNames("text-l", "m-m");
-
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
-
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
         header.setWidthFull();
         header.addClassNames("py-0", "px-m");
-
         addToNavbar(header);
 
-        //Controllo se l'utente è anonimo oppure registrato, e determino se inserire pulsante di login o logout
+        // Aggiunge il pulsante di login o logout in base allo stato dell'utente
         if(isUserLoggedIn()){
             Button logout = new Button("Logout", e -> securityService.logout());
             logout.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -61,42 +60,37 @@ public class MainLayout extends AppLayout {
             login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             header.add(login);
         }
-
     }
 
+    // Aggiunge il contenuto al menu laterale
     private void addDrawerContent() {
         H1 appName = new H1("Naviga");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
         Header header = new Header(appName);
-
         Scroller scroller = new Scroller(createNavigation());
-
         addToDrawer(header, scroller, createFooter());
     }
 
+    // Crea la navigazione nel menu laterale
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
-
         nav.addItem(new SideNavItem("Home", HomeView.class));
         nav.addItem(new SideNavItem("Catalogo", CatalogoView.class));
         nav.addItem(new SideNavItem("Scrittura storia", ScritturaView.class));
         nav.addItem(new SideNavItem("Gestione storie scritte", GestioneScritteView.class));
         nav.addItem(new SideNavItem("Gestione storie giocate", GestioneGiocateView.class));
-
-
         return nav;
     }
 
+    // Crea il piè di pagina
     private Footer createFooter() {
         Footer layout = new Footer();
-
         return layout;
     }
 
+    // Controlla se l'utente è loggato
     public boolean isUserLoggedIn() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null && !(authentication instanceof AnonymousAuthenticationToken);
     }
-
-
 }

@@ -15,33 +15,44 @@ import java.util.Optional;
 @Service
 public class StoriaService {
 
-    @Autowired
-    private StoriaRepository repository;
+    private final StoriaRepository repository;
+    private final ScenarioService scenarioService;
+    private final CollegamentoService collegamentoService;
+    private final OggettoService oggettoService;
+    private final InventarioService inventarioService;
+    private final SceltaIndovinelloService sceltaIndovinelloService;
+    private final SceltaSempliceService sceltaSempliceService;
 
     @Autowired
-    private ScenarioService scenarioService;
+    public StoriaService(StoriaRepository storiaRepository,
+                         ScenarioService scenarioService,
+                         CollegamentoService collegamentoService,
+                         OggettoService oggettoService,
+                         InventarioService inventarioService,
+                         SceltaIndovinelloService sceltaIndovinelloService,
+                         SceltaSempliceService sceltaSempliceService){
+        this.repository = storiaRepository;
+        this.scenarioService = scenarioService;
+        this.collegamentoService = collegamentoService;
+        this.oggettoService = oggettoService;
+        this.inventarioService = inventarioService;
+        this.sceltaIndovinelloService = sceltaIndovinelloService;
+        this.sceltaSempliceService = sceltaSempliceService;
+    }
 
-    @Autowired
-    private CollegamentoService collegamentoService;
-
-    @Autowired
-    private OggettoService oggettoService;
-
-    @Autowired
-    private InventarioService inventarioService;
-
-    @Autowired
-    private SceltaIndovinelloService sceltaIndovinelloService;
-
-    @Autowired
-    private SceltaSempliceService sceltaSempliceService;
-
-    // Salva storia
+    /**
+     * Salva una storia nel database.
+     * @param storia la storia da salvare
+     * @return la storia salvata
+     */
     public Storia saveStoria(Storia storia) {
         return repository.save(storia);
     }
 
-    // Elimina storia e tutti i suoi scenari
+    /**
+     * Elimina una storia e tutti i suoi componenti associati dal database.
+     * @param storia la storia da eliminare
+     */
     @Transactional
     public void deleteStoria(Storia storia) {
         inventarioService.deleteInventarioByStoria(storia);
@@ -53,28 +64,46 @@ public class StoriaService {
         repository.delete(storia);
     }
 
-    // Ritorna storia dal suo ID
+    /**
+     * Ottiene una storia dato il suo ID.
+     * @param idStoria l'ID della storia
+     * @return la storia trovata, o null se non trovata
+     */
     public Storia getStoria(int idStoria) {
         return repository.findById(idStoria).orElse(null);
     }
 
-    // True se storia con quell'ID esiste
+    /**
+     * Verifica se esiste una storia con l'ID dato.
+     * @param idStoria l'ID della storia
+     * @return true se esiste una storia con l'ID dato, altrimenti false
+     */
     public Boolean existsStoria(int idStoria) {
         return repository.existsById(idStoria);
     }
 
-    // True se nessuna storia presente
+    /**
+     * Verifica se non ci sono storie nel database.
+     * @return true se non ci sono storie nel database, altrimenti false
+     */
     public boolean isEmpty() {
         return repository.count() == 0;
     }
 
-    // Ritorna tutte le storie
+    /**
+     * Ottiene tutte le storie presenti nel database.
+     * @return un'ArrayList contenente tutte le storie
+     */
     public ArrayList<Storia> getAllStorie() {
         Collection<Storia> storie = repository.findAll();
         return new ArrayList<>(storie);
     }
 
-    // Ritorna tutte le storie se nessun filtro, altrimenti filtra
+    /**
+     * Trova tutte le storie nel database con o senza un filtro.
+     * @param filtro il filtro da applicare alle storie (può essere null o vuoto)
+     * @return una lista di storie che soddisfano il filtro, o tutte le storie se il filtro è vuoto o null
+     */
     public List<Storia> findAllStorie(String filtro) {
         if (filtro == null || filtro.isEmpty()) {
             return repository.findAll();
@@ -83,7 +112,12 @@ public class StoriaService {
         }
     }
 
-    // Ritorna tutte le storie dell'utente loggato se nessun filtro, altrimenti filtra
+    /**
+     * Trova tutte le storie scritte da un utente nel database, con o senza un filtro.
+     * @param username lo username dell'utente di cui trovare le storie
+     * @param filtro il filtro da applicare alle storie (può essere null o vuoto)
+     * @return una lista di storie scritte dall'utente che soddisfano il filtro, o tutte le storie scritte dall'utente se il filtro è vuoto o null
+     */
     public List<Storia> findAllStorieScritte(String username, String filtro) {
         if (filtro == null || filtro.isEmpty()) {
             return repository.findByUsername(username);
@@ -93,18 +127,13 @@ public class StoriaService {
     }
 
 
-    // Ritorna tutte le storie scritte da un utente
-    public ArrayList<Storia> getStorieUtente(String user) {
-        return repository.findByUsername(user);
-    }
-
-
-
+    /**
+     * Imposta il numero di scenari di una storia nel database.
+     * @param storia la storia di cui impostare il numero di scenari
+     * @param numeroStato il numero di scenari da impostare
+     */
     public void setNScenari(Storia storia, int numeroStato) {
         storia.setNumeroStato(numeroStato);
         repository.save(storia);
     }
-
-
-
 }

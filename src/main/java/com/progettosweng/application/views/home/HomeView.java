@@ -18,6 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.Objects;
 
+/**
+ * Classe che implementa la home dell'applicazione
+ */
 @PageTitle("Home | PathFinder")
 @Route(value = "home", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)

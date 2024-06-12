@@ -34,24 +34,28 @@ import com.vaadin.flow.component.grid.Grid;
 
 import java.util.List;
 
+/**
+ * Classe che implementa la pagina di creazione della storia
+ */
+
 @PermitAll
 @PageTitle("Storia | Scrittura")
 @Route(value = "scrittura", layout = MainLayout.class)
 public class ScritturaView extends VerticalLayout {
 
-    private UserService userService;
-    private StoriaService storiaService;
-    private ScenarioService scenarioService;
+    private final UserService userService;
+    private final StoriaService storiaService;
+    private final ScenarioService scenarioService;
 
-    private Span scenarioCountLabel;
-    private Button avanti;
-    private TextField titolo;
-    private TextArea descrizione;
-    private Button creaScenari;
-    private Button salvaStoria;
-    private String username;
+    private final Span scenarioCountLabel;
+    private final Button avanti;
+    private final TextField titolo;
+    private final TextArea descrizione;
+    private final Button creaScenari;
+    private final Button salvaStoria;
+    private final String username;
     private Storia storia;
-    private Grid<Scenario> tabellaScenari = new Grid<>(Scenario.class);
+    private final Grid<Scenario> tabellaScenari = new Grid<>(Scenario.class);
     private HorizontalLayout tableLayout;
 
     private int scenarioCount = 0;
@@ -61,14 +65,12 @@ public class ScritturaView extends VerticalLayout {
         this.userService = userService;
         this.storiaService = storiaService;
         this.scenarioService = scenarioService;
-        // Set up the vertical layout
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         setSizeFull();
         setPadding(true);
         setMargin(true);
         setSpacing(true);
 
-        // Implementazione del contenuto della vista
         H1 titoloPagina = new H1("Scrittura storia");
 
         VerticalLayout verticalLayout = new VerticalLayout();
@@ -129,35 +131,31 @@ public class ScritturaView extends VerticalLayout {
         add(titoloPagina, container, creaScenari, scenarioCountLabel, avanti);
     }
 
+    //metodo che configura la tabella degli scenari aggiunti
     private void configureGridScenari() {
 
         tableLayout = new HorizontalLayout();
         tableLayout.setJustifyContentMode(JustifyContentMode.CENTER);
-        // Rimuovi tutte le colonne esistenti
         tabellaScenari.removeAllColumns();
 
-        // Aggiungi le colonne con espressioni lambda corrette
         tabellaScenari.addColumn(Scenario::getTitolo).setHeader("Titolo scenario");
         tabellaScenari.addColumn(Scenario::getDescrizione).setHeader("Descrizione");
 
-        // Imposta l'altezza massima della tabella
         tabellaScenari.setMaxHeight("300px");
         tabellaScenari.addThemeVariants(GridVariant.LUMO_NO_ROW_BORDERS);
         tabellaScenari.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         tabellaScenari.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
         tabellaScenari.setWidth("1500px");
-        // Imposta la modalità di selezione
+
         tabellaScenari.setSelectionMode(Grid.SelectionMode.NONE);
         tableLayout.add(tabellaScenari);
 
-        // Carica i collegamenti e aggiorna la tabella
         updateTable();
     }
 
+    //metodo che aggiorna la tabella ogni volta che viene aggiunto uno scenario
     private void updateTable() {
-        // Carica i collegamenti per lo scenario corrente
         List<Scenario> scenari = scenarioService.getScenariByStoria(storia);
-        // Aggiorna la tabella con i nuovi dati
         tabellaScenari.setItems(scenari);
 
         if(scenarioCount > 0){
@@ -165,34 +163,38 @@ public class ScritturaView extends VerticalLayout {
         }
     }
 
+    //metodo che controla che siano stati aggiunti 3 scenari e abilita il pulsante per proseguire
     private void prosegui() {
         if (scenarioCount >= 3) {
             avanti.setEnabled(true);
         }
     }
 
+    //metodo controlla gli input, gestisce l'abilitazione dei pulsanti e richiama il metodo di salvataggio della storia
     public void salva() {
         if (titolo.getValue().isEmpty() || descrizione.getValue().isEmpty()) {
             Notification.show("Compila tutti i campi").addThemeVariants(NotificationVariant.LUMO_ERROR);
         } else {
             salvaStoria(username,
                     titolo.getValue(),
-                    descrizione.getValue());
+                    descrizione.getValue()
+            );
             creaScenari.setEnabled(true);
             salvaStoria.setEnabled(false);
         }
     }
 
+    //metodo che salva la storia
     private void salvaStoria(String username, String titolo, String descrizione) {
         User user = userService.getUser(username);
         storia = new Storia(titolo, descrizione, scenarioCount, user);
-        storiaService.saveStoria(storia); // Salva e ottieni la storia gestita
+        storiaService.saveStoria(storia);
         Notification.show("Storia aggiunta");
 
-        // Salva l'ID della storia nella sessione
         VaadinSession.getCurrent().setAttribute("idStoria", storia.getIdStoria());
     }
 
+    //metodo che configura il dialog per la creazione dello scenario
     private void openScenarioDialog() {
         Dialog dialog = new Dialog();
         dialog.addClassName("centered-dialog-overlay");
@@ -236,6 +238,7 @@ public class ScritturaView extends VerticalLayout {
         dialog.open();
     }
 
+    //metodo che salva gli scenari
     private void salvaScenario(String titolo, String descrizione) {
         scenarioCount++;
 
@@ -252,6 +255,7 @@ public class ScritturaView extends VerticalLayout {
         Notification.show("Scenario aggiunto");
     }
 
+    //metodo che conta il numero di scenari inseriti
     public void updateCount() {
         scenarioCountLabel.setText("Numero di scenari presenti nella storia: " + scenarioCount);
     }

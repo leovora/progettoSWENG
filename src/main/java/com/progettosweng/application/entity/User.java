@@ -7,6 +7,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * User rappresenta un utente registrato nel sistema.
+ * Estende AbstractUser e include campi aggiuntivi per nome utente, password, nome e cognome.
+ */
+
 @Entity
 @Data
 @AllArgsConstructor

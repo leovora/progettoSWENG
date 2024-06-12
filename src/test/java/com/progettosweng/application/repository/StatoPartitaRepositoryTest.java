@@ -4,7 +4,6 @@ import com.progettosweng.application.entity.StatoPartita;
 import com.progettosweng.application.entity.Storia;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import java.util.List;
@@ -27,12 +26,12 @@ class StatoPartitaRepositoryTest {
         String username = "testUser";
         Storia storia = new Storia();
         StatoPartita statoPartita = new StatoPartita();
-        when(statoPartitaRepository.ByUsernameAndStoria(username, storia)).thenReturn(statoPartita);
+        when(statoPartitaRepository.findByUsernameAndStoria(username, storia)).thenReturn(statoPartita);
 
-        StatoPartita foundStatoPartita = statoPartitaRepository.ByUsernameAndStoria(username, storia);
+        StatoPartita foundStatoPartita = statoPartitaRepository.findByUsernameAndStoria(username, storia);
 
         assertEquals(statoPartita, foundStatoPartita);
-        verify(statoPartitaRepository, times(1)).ByUsernameAndStoria(username, storia);
+        verify(statoPartitaRepository, times(1)).findByUsernameAndStoria(username, storia);
     }
 
     @Test

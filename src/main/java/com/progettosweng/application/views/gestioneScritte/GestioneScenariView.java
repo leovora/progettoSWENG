@@ -21,6 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * Classe che implementa la pagina in cui vengono visualizzati e modificati gli scenari di una storia
+ */
+
 @PageTitle("Scenari | Gestione")
 @Route(value = "scenari-view", layout = MainLayout.class)
 @PermitAll
@@ -86,6 +90,7 @@ public class GestioneScenariView extends VerticalLayout {
         modificaScenario.addListener(ModificaScenario.IndietroEvent.class, e -> closeEditor());
     }
 
+    //metodo che salva le modifiche a uno scenario
     private void salvaScenario(ModificaScenario.SalvaEvent event) {
         scenarioService.saveScenario(event.getScenario());
         updateList();

@@ -28,6 +28,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
 
+/**
+ * Classe che implementa il processo gioco di una storia
+ */
+
 @PageTitle("Gioca Storia")
 @Route(value = "gioca-storia", layout = MainLayout.class)
 @AnonymousAllowed
@@ -73,7 +77,6 @@ public class GiocaStoria extends VerticalLayout {
         if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
             user = new AnonymousUser();
             abstractUserService.saveUser(user);
-
         }
         else{
             user = userService.getUser(authentication.getName());
@@ -85,6 +88,7 @@ public class GiocaStoria extends VerticalLayout {
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
 
+    // Configura la storia in base all'ID memorizzato nella sessione. Imposta il primo scenario da mostrare.
     private void configureStoria() {
         Integer idStoria = (Integer) VaadinSession.getCurrent().getAttribute("idStoria");
         if (idStoria != null) {
@@ -112,9 +116,7 @@ public class GiocaStoria extends VerticalLayout {
         }
     }
 
-
-
-
+    // Mostra lo scenario corrente
     private void displayScenario(Scenario scenario) {
         currentScenario = scenario;
 
@@ -160,14 +162,16 @@ public class GiocaStoria extends VerticalLayout {
         raccogliOggetti(scenario);
     }
 
-
+    // Gestisce il caso dello scenario finale
     private Button casoScenarioFinale(Scenario scenario) {
         fine = new Button("Fine", e -> {
             inventarioService.deleteInventarioUser(user, storia);
-            statoPartitaService.deleteStatoPartitaByUserAndStoria((User) user, storia); // Elimina lo stato della partita
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
             if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
                 abstractUserService.deleteUser(user);
+            }
+            else{
+                statoPartitaService.deleteStatoPartitaByUserAndStoria((User) user, storia); // Elimina lo stato della partita
             }
         });
         fine.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -179,7 +183,7 @@ public class GiocaStoria extends VerticalLayout {
         return fine;
     }
 
-
+    // Raccoglie gli oggetti associati allo scenario
     private void raccogliOggetti(Scenario scenario) {
         List<Oggetto> oggetti = oggettoService.getOggettiScenario(scenario);
         for(Oggetto oggetto : oggetti){
@@ -193,17 +197,15 @@ public class GiocaStoria extends VerticalLayout {
         }
     }
 
+    // Gestisce l'evento di scelta in base al tipo
     private void scelta(Collegamento collegamento) {
         Scenario destinazione = collegamentoService.eseguiScelta(collegamento);
         if(destinazione != null){
             if (collegamento.getOggettoRichiesto() == null) {
-                System.out.println("NESSUN OGGETTO RICHIESTO" + collegamento.getIdCollegamento());
                 displayScenario(destinazione);
             } else if (inventarioService.checkOggettoInventario(user, collegamento.getOggettoRichiesto())) {
-                System.out.println("OGGETTO RICHIESTO POSSEDUTO: " + collegamento.getOggettoRichiesto());
                 displayScenario(destinazione);
             } else {
-                System.out.println("OGGETTO RICHIESTO NON POSSEDUTO: " + collegamento.getOggettoRichiesto());
                 Notification.show("Non hai l'oggetto richiesto: " + collegamento.getOggettoRichiesto().getNomeOggetto()).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
             }
         }
@@ -212,6 +214,7 @@ public class GiocaStoria extends VerticalLayout {
         }
     }
 
+    // Configura il dialog per l'indovinello
     private void configDialogIndovinello(Collegamento collegamento) {
         SceltaIndovinello sceltaIndovinello = sceltaIndovinelloService.getSceltaIndovinelloCollegamento(collegamento.getIdCollegamento());
         Dialog dialogIndovinello = new Dialog();
@@ -233,12 +236,13 @@ public class GiocaStoria extends VerticalLayout {
         dialogIndovinello.open();
     }
 
+    // Gestisce l'evento di uscita e in base al tipo di utente salva il progresso
     private void esciEvent() {
         if (authentication == null || authentication instanceof AnonymousAuthenticationToken) {
             inventarioService.deleteInventarioUser(user, storia);
             abstractUserService.deleteUser(user);
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
-            Notification.show("Utente non autenticato, operazioni di logout eseguite.").addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            Notification.show("Utente non autenticato, progresso partita non salvato");
         } else {
             StatoPartita statoPartita = statoPartitaService.getStatoPartitaByUserAndStoria((User) user, storia);
             if (statoPartita == null) {
@@ -250,5 +254,4 @@ public class GiocaStoria extends VerticalLayout {
             getUI().ifPresent(ui -> ui.navigate("catalogo"));
         }
     }
-
 }

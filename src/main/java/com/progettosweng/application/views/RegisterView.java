@@ -17,23 +17,26 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * Classe che implementa la pagina di registrazione
+ */
+
 @Route("register")
 @AnonymousAllowed
 public class RegisterView extends VerticalLayout {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    public RegisterView() {
+    @Autowired
+    public RegisterView(UserService userService) {
+        this.userService = userService;
+
         //Implementazione del contenuto della vista
         TextField username = new TextField("Username");
         TextField nome = new TextField("Nome");
         TextField cognome = new TextField("Cognome");
         PasswordField password1 = new PasswordField("Password");
         PasswordField password2 = new PasswordField("Conferma Password");
-
-
-
 
         Dialog dialog = new Dialog();
         dialog.setCloseOnOutsideClick(false);

@@ -6,6 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Classe che rappresenta l'inventario di un utente.
+ * Contiene un oggetto che fa riferimento a un utente e a una particolare storia
+ */
+
 @Entity
 @Data
 @AllArgsConstructor

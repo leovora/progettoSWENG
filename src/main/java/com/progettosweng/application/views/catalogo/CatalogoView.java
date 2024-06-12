@@ -22,10 +22,12 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.component.html.H1;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
+
+/**
+ * Classe che implementa il catalogo di tutte le storie scritte da tutti gli utenti.
+ */
 
 @PageTitle("Storie | Catalogo")
 @Route(value = "catalogo", layout = MainLayout.class)
@@ -91,6 +93,7 @@ public class CatalogoView extends VerticalLayout {
         visualizzaStoria.addListener(VisualizzaStoria.PrimoScenarioEvent.class, this::primoScenario);
     }
 
+    //metodo che inizia partita della storia selezionata (o riprende partita se progresso salvato)
     private void gioca(VisualizzaStoria.GiocaEvent e) {
         Storia storia = e.getStoria();
         if (storia != null) {
@@ -99,14 +102,13 @@ public class CatalogoView extends VerticalLayout {
         }
     }
 
+    //metodo che apre dialog che mostra primo scenario della storia selezionata
     private void primoScenario(VisualizzaStoria.PrimoScenarioEvent e) {
         Storia storia = e.getStoria();
         Dialog dialog = new Dialog();
         dialog.setCloseOnEsc(true);
         dialog.setCloseOnOutsideClick(true);
-
         dialog.setWidth("50%");
-//        dialog.setHeight("50%");
 
         if (storia != null) {
             Scenario primoScenario = scenarioService.getPrimoScenario(storia);

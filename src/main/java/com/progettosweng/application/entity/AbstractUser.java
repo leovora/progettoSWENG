@@ -6,6 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * AbstractUser è la classe base per tutte le entità utente.
+ * Utilizza una strategia di ereditarietà a tabella singola.
+ */
+
 @Entity
 @Data
 @AllArgsConstructor

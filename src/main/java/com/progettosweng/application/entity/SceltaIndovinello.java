@@ -14,6 +14,11 @@ import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Classe che estende Collegamento, rappresenta un collegamento tra scenari con un indovinello da superare.
+ * Vi sono due collegamenti a scenari differenti in base all'esito della risposta
+ */
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -28,7 +33,6 @@ public class SceltaIndovinello extends Collegamento{
     @Column(name = "Risposta")
     private String risposta;
 
-    //In caso di risposta sbagliata all'indovinello collegamento ad altro scenario
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "scenarioSbagliato_id")
     private Scenario scenarioSbagliato;
@@ -39,36 +43,6 @@ public class SceltaIndovinello extends Collegamento{
         this.risposta = risposta;
         this.scenarioSbagliato = scenarioSbagliato;
     }
-
-    //TODO
-//    @Override
-//    public Scenario eseguiScelta() {
-//        CompletableFuture<Scenario> future = new CompletableFuture<>();
-//
-//        Dialog dialog = new Dialog();
-//        H2 domandaIndovinello = new H2(this.domanda);
-//        TextField rispostaGiocatore = new TextField("Risposta");
-//        Button conferma = new Button("Conferma");
-//
-//        VerticalLayout verticalLayout = new VerticalLayout(domandaIndovinello, rispostaGiocatore, conferma);
-//        dialog.add(verticalLayout);
-//        dialog.open();
-//
-//        conferma.addClickListener(e -> {
-//            dialog.close();
-//        });
-//
-//        dialog.addDialogCloseActionListener(e -> {
-//            if (this.risposta.equalsIgnoreCase(rispostaGiocatore.getValue())) {
-//                future.complete(this.getScenario2());
-//            } else {
-//                future.complete(this.scenarioSbagliato);
-//            }
-//        });
-//
-//        // Restituisci il futuro
-//        return future.join();
-//    }
 
     @Override
     public Scenario eseguiScelta() {

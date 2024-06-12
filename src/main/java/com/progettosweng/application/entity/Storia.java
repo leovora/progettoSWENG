@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+/**
+ * Classe che rappresenta una storia giocabile.
+ */
+
 @Entity
 @Data
 @AllArgsConstructor

@@ -11,11 +11,38 @@ public class InventarioService {
     @Autowired
     InventarioRepository inventarioRepository;
 
-    public Inventario saveOggettoInventario(Inventario inventario) { return inventarioRepository.save(inventario);}
+    /**
+     * Salva un oggetto nell'inventario nel database.
+     * @param inventario l'oggetto inventario da salvare
+     */
+    public void saveOggettoInventario(Inventario inventario) {
+        inventarioRepository.save(inventario);
+    }
 
-    public void deleteInventarioByStoria(Storia storia) { inventarioRepository.deleteByStoria(storia);}
+    /**
+     * Elimina l'inventario associato a una storia dal database.
+     * @param storia la storia di cui eliminare l'inventario
+     */
+    public void deleteInventarioByStoria(Storia storia) {
+        inventarioRepository.deleteByStoria(storia);
+    }
 
-    public void deleteInventarioUser(AbstractUser user, Storia storia) { inventarioRepository.deleteByUser(user, storia);}
+    /**
+     * Elimina l'inventario di un utente associato a una storia dal database.
+     * @param user l'utente di cui eliminare l'inventario
+     * @param storia la storia di cui eliminare l'inventario
+     */
+    public void deleteInventarioUser(AbstractUser user, Storia storia) {
+        inventarioRepository.deleteByUser(user, storia);
+    }
 
-    public Boolean checkOggettoInventario(AbstractUser user, Oggetto oggetto) { return inventarioRepository.checkOggetto(user, oggetto);}
+    /**
+     * Verifica se un oggetto è presente nell'inventario di un utente.
+     * @param user l'utente di cui controllare l'inventario
+     * @param oggetto l'oggetto da controllare
+     * @return true se l'oggetto è presente nell'inventario dell'utente, altrimenti false
+     */
+    public Boolean checkOggettoInventario(AbstractUser user, Oggetto oggetto) {
+        return inventarioRepository.checkOggetto(user, oggetto);
+    }
 }

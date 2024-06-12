@@ -15,7 +15,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
+/**
+ * Configurazione della sicurezza dell'applicazione.
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends VaadinWebSecurity {
@@ -23,17 +25,26 @@ public class SecurityConfig extends VaadinWebSecurity {
     @Autowired
     private UserService userService;
 
+    /**
+     * Configura le impostazioni di sicurezza HTTP.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
-        setLoginView(http, LoginView.class);
+        setLoginView(http, LoginView.class); // Imposta la vista di login.
     }
 
+    /**
+     * Configura le impostazioni di sicurezza web.
+     */
     @Override
     protected void configure(WebSecurity web) throws Exception {
         super.configure(web);
     }
 
+    /**
+     * Bean per il servizio di dettaglio dell'utente, utilizzato per caricare i dettagli utente per l'autenticazione.
+     */
     @Bean
     UserDetailsService userDetailsService() {
         return username -> {
@@ -49,8 +60,11 @@ public class SecurityConfig extends VaadinWebSecurity {
         };
     }
 
+    /**
+     * Bean per l'encoder della password, qui utilizza un encoder di password che non esegue nessuna operazione di hashing.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
+        return NoOpPasswordEncoder.getInstance(); // Nessun hashing della password
     }
 }

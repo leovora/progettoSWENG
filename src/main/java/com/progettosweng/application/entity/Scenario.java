@@ -7,6 +7,10 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe che rappresenta uno scenario di una storia.
+ */
+
 @Entity
 @Data
 @AllArgsConstructor
