@@ -22,6 +22,7 @@ public class StoriaService {
     private final InventarioService inventarioService;
     private final SceltaIndovinelloService sceltaIndovinelloService;
     private final SceltaSempliceService sceltaSempliceService;
+    private final StatoPartitaService statoPartitaService;
 
     @Autowired
     public StoriaService(StoriaRepository storiaRepository,
@@ -30,7 +31,8 @@ public class StoriaService {
                          OggettoService oggettoService,
                          InventarioService inventarioService,
                          SceltaIndovinelloService sceltaIndovinelloService,
-                         SceltaSempliceService sceltaSempliceService){
+                         SceltaSempliceService sceltaSempliceService,
+                         StatoPartitaService statoPartitaService){
         this.repository = storiaRepository;
         this.scenarioService = scenarioService;
         this.collegamentoService = collegamentoService;
@@ -38,6 +40,7 @@ public class StoriaService {
         this.inventarioService = inventarioService;
         this.sceltaIndovinelloService = sceltaIndovinelloService;
         this.sceltaSempliceService = sceltaSempliceService;
+        this.statoPartitaService = statoPartitaService;
     }
 
     /**
@@ -55,6 +58,7 @@ public class StoriaService {
      */
     @Transactional
     public void deleteStoria(Storia storia) {
+        statoPartitaService.deleteStatoPartitaByStoria(storia);
         inventarioService.deleteInventarioByStoria(storia);
         sceltaSempliceService.deleteSceltaSempliceByStoria(storia);
         sceltaIndovinelloService.deleteSceltaIndovinelloByStoria(storia);

@@ -127,4 +127,6 @@ public class StatoPartitaService {
     public int getStoriaId(StatoPartita statoPartita) {
         return statoPartita.getStoria().getIdStoria();
     }
+
+    public void deleteStatoPartitaByStoria(Storia storia) { statoPartitaRepository.deleteByStoria(storia); }
 }

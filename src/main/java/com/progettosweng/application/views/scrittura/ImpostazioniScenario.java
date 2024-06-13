@@ -261,7 +261,7 @@ public class ImpostazioniScenario extends VerticalLayout {
         comboBoxScelta.addValueChangeListener(event -> {
             verticalLayout.removeAll();
             verticalLayout.add(titoloCollegamento, nomeScelta, comboBoxScenario, comboBoxScelta);
-            String selezione = event.getValue(); // Use getValue() instead of getHasValue().toString()
+            String selezione = event.getValue();
             if ("Scelta semplice".equals(selezione)) {
                 Button salvaCollegamentoSemplice = new Button("Salva collegamento", e -> SalvaCollegamentoSemplice());
                 verticalLayout.add(salvaCollegamentoSemplice);
