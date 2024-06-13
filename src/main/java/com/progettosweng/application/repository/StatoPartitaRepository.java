@@ -58,4 +58,10 @@ public interface StatoPartitaRepository extends JpaRepository<StatoPartita, Long
      */
     @Query("SELECT sp.scenario.idScenario FROM StatoPartita sp WHERE sp.username = :username AND sp.storia = :storia")
     Integer findScenarioIdById(@Param("username") String username, @Param("storia") Storia storia);
+
+    /**
+     * Elimina tutte le partite salvate associate a una storia specificata.
+     * @param storia la storia
+     */
+    void deleteByStoria(Storia storia);
 }
