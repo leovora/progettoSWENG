@@ -22,12 +22,17 @@ public interface StoriaRepository extends JpaRepository<Storia, Integer> {
     ArrayList<Storia> findByUsername(String username);
 
     /**
-     * Filtra le storie per titolo o per creatore utilizzando un filtro di testo.
-     * @param filtro il filtro di testo
-     * @return una lista di storie filtrate
+     * Filtra le storie per titolo, creatore e lunghezza
+     * @param filtro il filtro per il titolo o il creatore
+     * @param lunghezza la lunghezza della storia (breve o lunga)
+     * @return una lista di storie
      */
-    @Query("SELECT s FROM Storia s WHERE LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%')) OR LOWER(s.creatore.nome) LIKE LOWER(CONCAT('%', :filtro, '%'))")
-    List<Storia> search(@Param("filtro") String filtro);
+    @Query("SELECT s FROM Storia s WHERE " +
+            "(LOWER(s.titolo) LIKE LOWER(CONCAT('%', :filtro, '%')) OR LOWER(s.creatore.nome) LIKE LOWER(CONCAT('%', :filtro, '%'))) " +
+            "AND (:lunghezza IS NULL OR " +
+            "(:lunghezza = 'breve' AND s.numeroStato <= 10) OR " +
+            "(:lunghezza = 'lunga' AND s.numeroStato > 10))")
+    List<Storia> search(@Param("filtro") String filtro, @Param("lunghezza") String lunghezza);
 
     /**
      * Filtra le storie di un utente specifico per titolo utilizzando un filtro di testo.

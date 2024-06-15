@@ -35,13 +35,29 @@ class StoriaRepositoryTest {
     @Test
     void testSearch() {
         String filtro = "test";
+        String lunghezza = "breve"; // Può essere "breve", "lunghe", o null
         List<Storia> storie = new ArrayList<>();
-        when(storiaRepository.search(filtro)).thenReturn(storie);
 
-        List<Storia> foundStories = storiaRepository.search(filtro);
+        when(storiaRepository.search(filtro, lunghezza)).thenReturn(storie);
+
+        List<Storia> foundStories = storiaRepository.search(filtro, lunghezza);
 
         assertEquals(storie, foundStories);
-        verify(storiaRepository, times(1)).search(filtro);
+        verify(storiaRepository, times(1)).search(filtro, lunghezza);
+    }
+
+    @Test
+    void testSearchWithNullLength() {
+        String filtro = "test";
+        String lunghezza = null;
+        List<Storia> storie = new ArrayList<>();
+
+        when(storiaRepository.search(filtro, lunghezza)).thenReturn(storie);
+
+        List<Storia> foundStories = storiaRepository.search(filtro, lunghezza);
+
+        assertEquals(storie, foundStories);
+        verify(storiaRepository, times(1)).search(filtro, lunghezza);
     }
 
     @Test

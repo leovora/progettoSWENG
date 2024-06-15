@@ -108,11 +108,11 @@ public class StoriaService {
      * @param filtro il filtro da applicare alle storie (può essere null o vuoto)
      * @return una lista di storie che soddisfano il filtro, o tutte le storie se il filtro è vuoto o null
      */
-    public List<Storia> findAllStorie(String filtro) {
-        if (filtro == null || filtro.isEmpty()) {
+    public List<Storia> findAllStorie(String filtro, String lunghezza) {
+        if ((filtro == null || filtro.isEmpty()) && (lunghezza == null || lunghezza.isEmpty())) {
             return repository.findAll();
         } else {
-            return repository.search(filtro);
+            return repository.search(filtro, lunghezza);
         }
     }
 

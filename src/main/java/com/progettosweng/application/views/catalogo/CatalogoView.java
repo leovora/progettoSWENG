@@ -7,6 +7,8 @@ import com.progettosweng.application.service.*;
 import com.progettosweng.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.combobox.ComboBoxVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -37,6 +39,7 @@ public class CatalogoView extends VerticalLayout {
     Grid<Storia> grid = new Grid<>(Storia.class);
     VisualizzaStoria visualizzaStoria;
     TextField filterText = new TextField();
+    ComboBox<String> filtroLunghezza = new ComboBox<>("Filtra per lunghezza");
     private StoriaService storiaService;
     private final StatoPartitaService statoPartitaService;
     private final UserService userService;
@@ -162,7 +165,11 @@ public class CatalogoView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY); //modo efficiente per frequenza delle chiamate al db
         filterText.addValueChangeListener(e -> updateList()); //aggiorna la lista ogni volta che si scrive un nuovo filtro
 
-        HorizontalLayout toolbar = new HorizontalLayout(filterText);
+        filtroLunghezza.setItems("Breve", "Lunga");
+        filtroLunghezza.addValueChangeListener(e -> updateList());
+
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, filtroLunghezza);
+        toolbar.setAlignItems(Alignment.BASELINE);
 
         return toolbar;
     }
@@ -193,7 +200,7 @@ public class CatalogoView extends VerticalLayout {
 
     //metodo che popola la tabella
     private void updateList() {
-        grid.setItems(storiaService.findAllStorie(filterText.getValue()));
+        grid.setItems(storiaService.findAllStorie(filterText.getValue(), filtroLunghezza.getValue()));
     }
 
     // Metodo per limitare la lunghezza della descrizione
