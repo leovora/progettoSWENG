@@ -3,7 +3,7 @@
  Progetto Ingegneria del Software a.a. 2023/2024
  - Leonardo Vorabbi (0001027881)
  - Jacopo Bonifazi (0001041819)
- - Nitesh
+ - Nitesh Kumawat 
  
 
 ## Avviare l'applicazione
