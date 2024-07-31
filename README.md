@@ -11,7 +11,7 @@
 Il deploy dell'applicazione è stato realizzato utilizzando Heroku. L'applicazione è disponibile online e può essere eseguita da qualsiasi nuova macchina semplicemente accedendo al link fornito. 
 
 **Link PathFinder:**
-https://progetto-sweng-c219b357f3b7.herokuapp.com
+https://progetto-sweng-c219b357f3b7.herokuapp.com (momentaneamente disattivato)
 
 Si noti che, essendo il piano di hosting quasi gratuito, può capitare che il caricamento dell’applicazione necessiti di diversi secondi.
 
